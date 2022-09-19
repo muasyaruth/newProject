@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "288267940509",
+    "firebase_url": "https://realtimeschedule-c1bb2-default-rtdb.firebaseio.com",
+    "project_id": "realtimeschedule-c1bb2",
+    "storage_bucket": "realtimeschedule-c1bb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288267940509:android:889b07210dc6a7727f9a74",
+        "android_client_info": {
+          "package_name": "com.example.realtimeschedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "288267940509-u7unutos4lqikacfkqgifll4j8adf4a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDA-f_HOt6ROwUqBA4LTNg56X0QNeVHlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "288267940509-u7unutos4lqikacfkqgifll4j8adf4a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288267940509:android:af720cee23ddba7d7f9a74",
+        "android_client_info": {
+          "package_name": "com.example.schedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "288267940509-u7unutos4lqikacfkqgifll4j8adf4a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDA-f_HOt6ROwUqBA4LTNg56X0QNeVHlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "288267940509-u7unutos4lqikacfkqgifll4j8adf4a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
