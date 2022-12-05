@@ -12,8 +12,8 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="374dp"
-        android:layout_height="504dp"
+        android:layout_width="347dp"
+        android:layout_height="300dp"
         android:layout_marginStart="14dp"
         android:layout_marginTop="14dp"
         android:layout_marginEnd="14dp"
@@ -24,8 +24,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="356dp"
+            android:layout_height="354dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/shape_left_panel"
             android:padding="15dp">
@@ -104,4 +104,30 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textViewUserNamePass"
+        android:layout_width="166dp"
+        android:layout_height="26dp"
+        android:text="User Name"
+        tools:layout_editor_absoluteX="92dp"
+        tools:layout_editor_absoluteY="25dp" />
+
+    <TextView
+        android:id="@+id/textViewEmailPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="User Email"
+        app:layout_constraintTop_toBottomOf="@+id/textViewUserNamePass"
+        tools:layout_editor_absoluteX="124dp" />
+
+    <TextView
+        android:id="@+id/textViewPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone number"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/textViewEmailPass"
+        tools:layout_editor_absoluteX="152dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

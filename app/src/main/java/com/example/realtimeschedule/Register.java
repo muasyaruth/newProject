@@ -130,7 +130,9 @@ public class Register extends AppCompatActivity {
                                 //loadingbar.dismiss();
                                 progressBar.setVisibility(View.GONE);
                                 Intent intent = new Intent(Register.this, MainActivity.class);
-                                intent.putExtra("currentphone", phone);
+                                intent.putExtra("currentPhone", phone);
+                                intent.putExtra("currentName", username);
+                                intent.putExtra("currentEmail", email);
                                 startActivity(intent);
                                 //startActivity(new Intent(getApplicationContext(),Login.class));
 
@@ -156,6 +158,8 @@ public class Register extends AppCompatActivity {
         location=(EditText)findViewById(R.id.Location);
         address=(EditText)findViewById(R.id.Address);
 
+//        username= editTextFullname.getText().toString();
+//        email= editTextEmail.getText().toString();
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }

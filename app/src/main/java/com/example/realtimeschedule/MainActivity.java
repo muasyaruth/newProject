@@ -8,12 +8,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
     Button viewSchedule, viewUsers, about, tuesday, wed;
+    TextView name, email, phone;
+    String UName, UEmail, UPhone;
 
-    public static void redirectActivity(GiveDayAndTimeAvailable giveDayAndTimeAvailable, Class<MainActivity> mainActivityClass) {
+    public static void redirectActivity(GiveDayAndTimeAvailable giveDayAndTimeAvailable,
+                                        Class<MainActivity> mainActivityClass) {
     }
 
 
@@ -21,6 +25,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        name= findViewById(R.id.textViewUserNamePass);
+        email= findViewById(R.id.textViewEmailPass);
+        phone= findViewById(R.id.textViewPhone);
+
+        Intent i = getIntent();
+        UName= i.getStringExtra("currentName");
+        UEmail= i.getStringExtra("currentEmail");
+        UPhone= i.getStringExtra("currentPhone");
+
+        name.setText(UName);
+        email.setText(UEmail);
+        phone.setText(UPhone);
+
 
         tuesday= findViewById(R.id.Tuesday);
         tuesday.setOnClickListener(new View.OnClickListener() {
