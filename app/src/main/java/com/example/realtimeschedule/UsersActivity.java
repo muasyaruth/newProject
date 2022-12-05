@@ -44,7 +44,7 @@ public class UsersActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        final DatabaseReference usersref = FirebaseDatabase.getInstance().getReference().child("User");
+        final DatabaseReference usersref = FirebaseDatabase.getInstance().getReference().child("Users");
 
         FirebaseRecyclerOptions<User> options = new FirebaseRecyclerOptions.Builder<User>()
                 .setQuery(usersref, User.class)

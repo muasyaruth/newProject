@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,12 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.paging.ItemKeyedDataSource;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.time.LocalDateTime;
 
 
 public class Login extends Activity {
@@ -34,6 +39,7 @@ public class Login extends Activity {
 
     FirebaseAuth mAuth;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,7 @@ public class Login extends Activity {
             }
         });
 
+        System.out.println("====================Time now================="+ LocalDateTime.now());
         reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,8 +91,7 @@ public class Login extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String mail = resetMail.getText().toString();
-                        try {
-
+                       // try {
 
                             firebaseAuth.sendPasswordResetEmail(mail).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -99,9 +105,10 @@ public class Login extends Activity {
                                     Toast.makeText(Login.this, "Error! Reset Link is not sent" + e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             });
-                        }catch (Exception e){
-                            Toast.makeText(Login.this, e.getMessage(),Toast.LENGTH_SHORT).show();
-                        }
+                        //}
+//                        catch (Exception e){
+//                            Toast.makeText(Login.this, e.getMessage(),Toast.LENGTH_SHORT).show();
+//                        }
                     }
                 });
                 passwordDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {

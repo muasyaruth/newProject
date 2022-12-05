@@ -18,6 +18,8 @@ public class MenuContainer extends AppCompatActivity implements NavigationView.O
 
    DrawerLayout drawerLayout;
 
+
+
     @Override
     public void setContentView(View view) {
 
@@ -32,8 +34,7 @@ public class MenuContainer extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView= drawerLayout.findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ActionBarDrawerToggle toggle= new ActionBarDrawerToggle(this,
-                drawerLayout,toolbar,R.string.menu_drawer_open,R.string.menu_drawer_close);
+        ActionBarDrawerToggle toggle= new ActionBarDrawerToggle(this, drawerLayout,toolbar,R.string.menu_drawer_open,R.string.menu_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -42,15 +43,22 @@ public class MenuContainer extends AppCompatActivity implements NavigationView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addStaff:
-                //Toast.makeText(MenuContainer.this, "Add Service", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), AddService.class));
-                return true;
-
             case R.id.viewUsers:
                 //Toast.makeText(MenuContainer.this, "", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(),
                         UsersActivity.class));
+                return true;
+
+            case R.id.bookings:
+                //Toast.makeText(MenuContainer.this, "", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),
+                        BookingsActivity.class));
+                return true;
+
+            case R.id.schedule:
+                //Toast.makeText(MenuContainer.this, "", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),
+                        Schedule.class));
                 return true;
         }
         return true;

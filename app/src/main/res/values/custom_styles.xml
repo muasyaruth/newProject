@@ -3,4 +3,10 @@
     <style name="Circular">
         <item name="cornerSize">50dp</item>
     </style>
+    <style name="splasStyle" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">
+            @drawable/splash
+        </item>
+    </style>
+"
 </resources>

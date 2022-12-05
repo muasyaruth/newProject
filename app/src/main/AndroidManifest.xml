@@ -16,19 +16,46 @@
         android:theme="@style/Theme.RealTimeSchedule"
         tools:targetApi="31">
         <activity
+            android:name=".userProfile"
+            android:exported="false" />
+        <activity
+            android:name=".TimeSlotsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".IsAvailable"
+            android:exported="false" />
+        <activity
+            android:name=".Schedule"
+            android:exported="false" />
+        <activity
+            android:name=".GiveDayAndTimeAvailable"
+            android:exported="false" />
+        <activity
+            android:name=".AppointmentDays"
+            android:exported="false" />
+        <activity
+            android:name=".AlarmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AppointmentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BookingDetails"
+            android:exported="false" />
+        <activity
+            android:name=".Login"
+            android:exported="false" />
+        <activity
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
             android:name=".UsersActivity"
             android:exported="false" />
         <activity
-            android:name=".BookService"
+            android:name=".BookingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ServiceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AddService"
+            android:name=".BookingFormActivity"
             android:exported="false" />
         <activity
             android:name=".AdminTasks"
@@ -37,8 +64,11 @@
             android:name=".MenuContainer"
             android:exported="false" />
         <activity
-            android:name=".Login"
-            android:exported="true">
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/splasStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="15dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="15dp"
+    android:background="@color/White"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="15dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/product_name"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="Drug Name"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textSize="10sp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            android:textColor="@color/colorPrimaryDark"-->
+        <!--            />-->
+
+
+        <ImageView
+            android:id="@+id/officer_image"
+            android:layout_width="122dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="122dp"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/clientName"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:text="Name of officer"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/clientEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="15dp"
+            android:text="Email"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView6"
+            app:layout_constraintTop_toBottomOf="@+id/clientName" />
+
+        <TextView
+            android:id="@+id/displayDesignation"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="15dp"
+            android:text="Designation"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView7"
+            app:layout_constraintTop_toBottomOf="@+id/clientEmail" />
+
+        <TextView
+            android:id="@+id/BookingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="15dp"
+            android:text="Booking date"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toBottomOf="@+id/displayDesignation" />
+
+        <TextView
+            android:id="@+id/BookingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="15dp"
+            android:text="booking Time"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/BookingDate" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Name:"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/officer_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:text="Email:"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/officer_image"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="94dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:text="Designation"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/officer_image"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:text="Convenient date:"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/officer_image"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:text="Convenient time:"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/officer_image"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

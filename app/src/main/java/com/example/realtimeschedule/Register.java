@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,24 +20,30 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Register extends AppCompatActivity {
     private Button register;
-    TextView signup;
+    private TextView signup;
     private EditText editTextFullname, editTextEmail, editTextPassword, Phone, location, address;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    DatabaseReference userRef;
-
+    private DatabaseReference userRef;
+    private String username, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
 
         mAuth = FirebaseAuth.getInstance();
         userRef= FirebaseDatabase.getInstance().getReference();
@@ -50,6 +59,7 @@ public class Register extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 final String username = editTextFullname.getText().toString().trim();
                 final String email = editTextEmail.getText().toString().trim();
                 final String phone = Phone.getText().toString().trim();
@@ -115,7 +125,7 @@ public class Register extends AppCompatActivity {
                                 users.put("isUser", "1");
 
                                 //set path
-                                userRef.child("User").child(currentUserId).setValue(users);
+                                userRef.child("Users").child(currentUserId).setValue(users);
                                 Toast.makeText(getApplicationContext(), "Account Created Successfully",Toast.LENGTH_SHORT).show();
                                 //loadingbar.dismiss();
                                 progressBar.setVisibility(View.GONE);
@@ -139,13 +149,13 @@ public class Register extends AppCompatActivity {
                 }
             }
         });
-        //register.setOnClickListener(this);
         editTextFullname = (EditText) findViewById(R.id.fullname);
         editTextEmail    = (EditText) findViewById(R.id.email);
         Phone=findViewById(R.id.phone);
         editTextPassword = (EditText) findViewById(R.id.password);
         location=(EditText)findViewById(R.id.Location);
         address=(EditText)findViewById(R.id.Address);
+        
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }

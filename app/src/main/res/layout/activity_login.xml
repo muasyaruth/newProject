@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="80dp"
+    android:layout_marginBottom="80dp"
+    android:background="@drawable/img"
     tools:context=".Login">
 
     <ScrollView
@@ -25,10 +27,11 @@
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="0dp"
-
                 android:layout_height="wrap_content"
+                android:layout_marginTop="92dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -94,12 +97,13 @@
                     tools:targetApi="LOLLIPOP" />
 
                 <CheckBox
+                    android:id="@+id/adminCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="30dp"
                     android:text="Admin Login"
-                    android:id="@+id/adminCheck"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="30dp"/>
+                    android:textColor="@color/White" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -108,6 +112,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="50dp"
                     android:background="@drawable/white_border"
+                    android:backgroundTint="@color/colorAccent"
                     android:elevation="10dp"
                     android:outlineAmbientShadowColor="@color/White"
                     tools:targetApi="p">
@@ -130,6 +135,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="50dp"
                     android:background="@drawable/white_border"
+                    android:backgroundTint="@color/colorAccent"
                     android:elevation="10dp"
                     android:outlineAmbientShadowColor="@android:color/darker_gray"
                     tools:targetApi="p">
@@ -145,33 +151,44 @@
                         android:textSize="20sp" />
                 </FrameLayout>
 
-                <TextView
-                    android:id="@+id/forget"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="20sp"
-                    android:linksClickable="true"
-                    android:text="Forgot password"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/white_border"
+                    android:elevation="10dp"
+                    android:outlineAmbientShadowColor="@android:color/darker_gray"
+                    tools:targetApi="p">
+
+                    <TextView
+                        android:id="@+id/forget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="20sp"
+                        android:linksClickable="true"
+                        android:text="Forgot password"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textView4"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-
         android:text="LOGIN"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/White"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="1dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
