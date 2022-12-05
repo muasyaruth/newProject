@@ -155,7 +155,7 @@ public class Register extends AppCompatActivity {
         editTextPassword = (EditText) findViewById(R.id.password);
         location=(EditText)findViewById(R.id.Location);
         address=(EditText)findViewById(R.id.Address);
-        
+
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }
