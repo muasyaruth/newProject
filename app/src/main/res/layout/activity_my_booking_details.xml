@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyBookingDetails">
+
+    <TextView
+        android:id="@+id/detailsName"
+        android:layout_width="166dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="44dp"
+        android:text="User Name"/>
+
+    <TextView
+        android:id="@+id/emailDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="617dp"
+        android:text="User Email"/>
+
+    <TextView
+        android:id="@+id/dateDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="Date"/>
+    <TextView
+        android:id="@+id/timeDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="Time"/>
+
+</RelativeLayout>

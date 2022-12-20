@@ -62,7 +62,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
 
                                 timer1.setText(dateAndroid);
                             }
-                        }, 12, 0, false);
+                        }, t1Hr, t1Min, false);
                 timePickerDialog.updateTime(t1Hr, t1Min);
                 timePickerDialog.show();
             }
@@ -96,7 +96,6 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
             @SuppressLint("SimpleDateFormat")
             @Override
             public void onClick(View v) {
-                int min = findMinutes();
 
                 Calendar calendar = Calendar.getInstance();
                 ArrayList<String> results = new ArrayList<>();
@@ -108,11 +107,11 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                     String day1 = sdf.format(calendar.getTime());
 
                     // add 15 minutes to the current time; the hour adjusts automatically!
-                    calendar.add(Calendar.MINUTE, 15);
+                    calendar.add(Calendar.MINUTE, 30);
                     String day2 = sdf.format(calendar.getTime());
 
                     //String day = day1 + " - " + day2;
-                    results.add(day1);
+                    results.add(day2);
                 }
 
                 if (results.size() != 0) {
@@ -127,38 +126,5 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Please select valid Time slot", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private int findMinutes() {
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(0, 0, 0, t1Hr, t1Min);
-        String d1 = android.text.format.DateFormat.format(
-                "kk:mm", calendar).toString();
-
-        calendar.set(0, 0, 0, t2Hr, t2Min);
-        String d2 = android.text.format.DateFormat.format(
-                "kk:mm", calendar).toString();
-
-        sdf = new SimpleDateFormat("hh:mm");
-
-        Date date1 = null;
-        try {
-            date1 = sdf.parse(d1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Date date2 = null;
-        try {
-            date2 = sdf.parse(d2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        long diff = date2.getTime() - date1.getTime();
-        int min = (int) (diff / (1000 * 60));
-        min = min / 120;
-        return (min);
     }
 }

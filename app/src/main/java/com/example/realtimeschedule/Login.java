@@ -59,16 +59,16 @@ public class Login extends Activity {
         admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (admin.isChecked()){
-                    startActivity(new Intent(getApplicationContext(), AdminTasks.class));
-                }
-                else{
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
+//                if (admin.isChecked()){
+//                    startActivity(new Intent(getApplicationContext(), AdminTasks.class));
+//                }
+//                else{
+//                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                }
             }
         });
 
-        System.out.println("====================Time now================="+ LocalDateTime.now());
+        //System.out.println("====================Time now================="+ LocalDateTime.now());
         reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -18,9 +18,9 @@
 
         <TextView
             android:id="@+id/userName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_centerHorizontal="true"
             android:text="User Name"
             android:textColor="@color/black"
             android:textSize="14dp"
@@ -28,10 +28,10 @@
 
         <TextView
             android:id="@+id/userEmail"
-            android:layout_width="160dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/userName"
-            android:layout_marginLeft="5dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="Email"
             android:textColor="@color/black"
@@ -40,10 +40,10 @@
 
         <TextView
             android:id="@+id/Phone"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/userEmail"
-            android:layout_marginLeft="5dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="PhoneNumber"
             android:textColor="@color/black"
@@ -53,16 +53,22 @@
 
         <TextView
             android:id="@+id/userId"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/Phone"
-            android:layout_marginLeft="5dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="User ID"
             android:textColor="@color/black"
 
             android:textSize="14dp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/userImageView"/>
 
 
         <!--        <TextView-->

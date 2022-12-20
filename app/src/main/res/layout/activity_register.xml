@@ -48,6 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+
                 <TextView
                     android:id="@+id/textViewReg"
                     android:layout_width="match_parent"
@@ -60,6 +61,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/scrolReg" />
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:id="@+id/profilePic"
+                    android:layout_height="80dp"
+                    android:src="@drawable/profile_pic"
+                    android:layout_gravity="center_horizontal"/>
 
 
                 <FrameLayout

@@ -1,8 +1,11 @@
 package com.example.realtimeschedule.Model;
 
+import java.util.Comparator;
+
 public class User {
 
     public String name, email, phone, password, uid;
+    private String image;
 
     public User() {}
 
@@ -14,11 +17,13 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", password='" + password + '\'' +
                 ", uid='" + uid + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 
-    public User(String name, String email, String phone, String password, String uid) {
+    public User(String name, String image, String email, String phone, String password, String uid) {
         this.name = name;
+        this.image = image;
         this.email = email;
         this.phone = phone;
         this.password = password;
@@ -63,5 +68,13 @@ public class User {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

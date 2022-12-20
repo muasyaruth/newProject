@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/teal_200"
     tools:context=".BookingFormActivity">
   <ScrollView
       android:id="@+id/scrolReg"
@@ -62,17 +63,7 @@
           android:textColor="@android:color/white"
           android:textSize="15sp"
           android:layout_centerHorizontal="true"
-          android:layout_below="@+id/slotsRecycler"/>
-      <EditText
-          android:id="@+id/editTextTime"
-          android:layout_width="411dp"
-          android:layout_height="60dp"
-          android:layout_marginTop="15dp"
-          android:background="@drawable/shape_edit_text"
-          android:ems="10"
-          android:hint=" Select Time"
-          android:inputType="time"
-          android:layout_below="@+id/editTextDate" />
+          android:layout_below="@+id/layoutDesignation"/>
 
       <EditText
           android:id="@+id/editTextDate"
@@ -92,7 +83,7 @@
           android:layout_marginTop="15dp"
           android:backgroundTint="@color/purple_200"
           android:orientation="horizontal"
-          android:layout_below="@+id/editTextTime">
+          android:layout_below="@+id/editTextDate">
 
         <EditText
             android:id="@+id/myDesignation"
@@ -118,19 +109,18 @@
 
       </LinearLayout>
 
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/PickSlot"
-        android:text="Time slots"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/layoutDesignation"/>
+<!--      <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/PickSlot"-->
+<!--        android:text="Time slots"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:layout_below="@+id/layoutDesignation"/>-->
 
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/slotsRecycler"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/PickSlot"
           android:scrollbars="vertical"/>
     </RelativeLayout>
   </ScrollView>

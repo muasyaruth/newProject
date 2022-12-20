@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,6 +64,8 @@ import com.squareup.picasso.Picasso;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -72,6 +75,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -86,13 +92,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class BookingFormActivity extends AppCompatActivity  {
-    private String Sname, email, senderPassword, Semail, date, time, sDesignation;
+    private String Sname, email, senderPassword, Semail, date, time, sDesignation, userId;
     private Button submitButton;
     private ImageView yourImage;
-    private EditText yourName, yourEmail, Date, Time, yourDesignation;
+    private EditText yourName, yourEmail, DateTime, Time, yourDesignation;
     private static final int GalleryPick = 1;
     private Uri ImageUri;
-    private String productRandomKey, downloadImageUrl;
+    private String UserBookingRandomKey, downloadImageUrl;
     private StorageReference userImagesRef;
     private DatabaseReference userRef, spinnerData;
     private ProgressDialog loadingBar;
@@ -135,71 +141,71 @@ public class BookingFormActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.booking_form_activity);
 
-        slotCards = findViewById(R.id.slotsRecycler);
+//        slotCards = findViewById(R.id.slotsRecycler);
+//
+//
+//        mDatabase = FirebaseDatabase.getInstance();
+//        mRef = mDatabase.getReference("Slots");
+//
+//
+//        mListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                slotTimes.clear();
+//                docTimings.clear();
+//                docReserved.clear();
+//                for (DataSnapshot slot: snapshot.getChildren()) {
+//                    String stand = slot.getValue(String.class);
+//
+//                    slotTimes.add(slot.getKey());
+//                    if (stand.equals("Available"))
+//                        docTimings.add(slot.getKey());
+//                    else if (stand.equals("Reserved"))
+//                        docReserved.add(slot.getKey());
+//                }
+//                Collections.sort(slotTimes, new Comparator<String>() {
+//                    @SuppressLint("SimpleDateFormat")
+//                    @Override
+//                    public int compare(String o1, String o2) {
+//                        try {
+//                            return new SimpleDateFormat("hh:mm a").parse(o1).compareTo(new SimpleDateFormat("hh:mm a").parse(o2));
+//                        } catch (ParseException e) {
+//                            return 0;
+//                        }
+//                    }
+//                });
+//                slotCards(slotTimes);
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        };
+//        mRef.child("Today").addValueEventListener(mListener);
+//
+//    }
+//    private void slotCards(ArrayList<String> slotTimes) {
+//        slotCards.setHasFixedSize(true);
+//        slotCards.setLayoutManager(new LinearLayoutManager(this));
+//
+//        ArrayList<String> sectionList = new ArrayList<>();
+//        sectionList.add("Today's Slots");
+//        itemList.put(sectionList.get(0), slotTimes);
+//        adapter = new BookAppointmentAdapter(this, sectionList, itemList, docTimings, docReserved, dr_name);
+//        GridLayoutManager manager = new GridLayoutManager(this, 3);
+//
+//        slotCards.setLayoutManager(manager);
+//        adapter.setLayoutManager(manager);
+//        slotCards.setAdapter(adapter);
+//
+//
+//
+//        alarmManager= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 
-        mDatabase = FirebaseDatabase.getInstance();
-        mRef = mDatabase.getReference("Slots");
 
-
-        mListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                slotTimes.clear();
-                docTimings.clear();
-                docReserved.clear();
-                for (DataSnapshot slot: snapshot.getChildren()) {
-                    String stand = slot.getValue(String.class);
-
-                    slotTimes.add(slot.getKey());
-                    if (stand.equals("Available"))
-                        docTimings.add(slot.getKey());
-                    else if (stand.equals("Reserved"))
-                        docReserved.add(slot.getKey());
-                }
-                Collections.sort(slotTimes, new Comparator<String>() {
-                    @SuppressLint("SimpleDateFormat")
-                    @Override
-                    public int compare(String o1, String o2) {
-                        try {
-                            return new SimpleDateFormat("hh:mm a").parse(o1).compareTo(new SimpleDateFormat("hh:mm a").parse(o2));
-                        } catch (ParseException e) {
-                            return 0;
-                        }
-                    }
-                });
-                slotCards(slotTimes);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        mRef.child("Today").addValueEventListener(mListener);
-
-    }
-    private void slotCards(ArrayList<String> slotTimes) {
-        slotCards.setHasFixedSize(true);
-        slotCards.setLayoutManager(new LinearLayoutManager(this));
-
-        ArrayList<String> sectionList = new ArrayList<>();
-        sectionList.add("Today's Slots");
-        itemList.put(sectionList.get(0), slotTimes);
-        adapter = new BookAppointmentAdapter(this, sectionList, itemList, docTimings, docReserved, dr_name);
-        GridLayoutManager manager = new GridLayoutManager(this, 3);
-
-        slotCards.setLayoutManager(manager);
-        adapter.setLayoutManager(manager);
-        slotCards.setAdapter(adapter);
-
-
-
-        alarmManager= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-
-
-        Date = (EditText) findViewById(R.id.editTextDate);
-        Time = (EditText) findViewById(R.id.editTextTime);
+        DateTime = (EditText) findViewById(R.id.editTextDate);
+//        Time = (EditText) findViewById(R.id.editTextTime);
         yourDesignation=(EditText) findViewById(R.id.myDesignation);
 
         spinner= (Spinner) findViewById(R.id.spinner);
@@ -239,21 +245,21 @@ public class BookingFormActivity extends AppCompatActivity  {
             }
         });
 
-        Date.setOnClickListener(new View.OnClickListener() {
+        DateTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dateDialog(Date);
+                dateTimeDialog(DateTime);
 
             }
         });
 
-        Time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timeDialog(Time);
-
-            }
-        });
+//        Time.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                timeDialog(Time);
+//
+//            }
+//        });
 
 
         submitButton = (Button) findViewById(R.id.submitRequest);
@@ -311,7 +317,7 @@ public class BookingFormActivity extends AppCompatActivity  {
                     e.printStackTrace();
 
                 }
-                ValidateProductData();
+                ValidateData();
             }
         });
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -327,13 +333,13 @@ public class BookingFormActivity extends AppCompatActivity  {
         startActivity(intent);
     }
 
-    private void ValidateProductData() {
+    private void ValidateData() {
 
         Sname = yourName.getText().toString();
         Semail = yourEmail.getText().toString();
         sDesignation=yourDesignation.getText() .toString();
-        date = Date.getText().toString();
-        time = Time.getText().toString();
+        date = DateTime.getText().toString();
+//        time = Time.getText().toString();
 
 
         if (ImageUri == null) {
@@ -341,11 +347,11 @@ public class BookingFormActivity extends AppCompatActivity  {
         } else if (TextUtils.isEmpty(Sname)) {
             Toast.makeText(this, "Please write user name...", Toast.LENGTH_SHORT).show();
         } else {
-            StoreProductInformation();
+            StoreBookingInformation();
         }
     }
 
-    private void StoreProductInformation() {
+    private void StoreBookingInformation() {
 
 
         loadingBar.setTitle("Adding New Booking");
@@ -353,7 +359,7 @@ public class BookingFormActivity extends AppCompatActivity  {
         loadingBar.setCanceledOnTouchOutside(false);
         loadingBar.show();
 
-        final StorageReference filePath = userImagesRef.child(ImageUri.getLastPathSegment() + productRandomKey + ".jpg");
+        final StorageReference filePath = userImagesRef.child(ImageUri.getLastPathSegment() + UserBookingRandomKey + ".jpg");
 
         final UploadTask uploadTask = filePath.putFile(ImageUri);
 
@@ -381,6 +387,7 @@ public class BookingFormActivity extends AppCompatActivity  {
                         return filePath.getDownloadUrl();
                     }
                 }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
@@ -396,21 +403,27 @@ public class BookingFormActivity extends AppCompatActivity  {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void SaveBookingInfoToDatabase() {
 
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
+        String BOOKINGCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder booking = new StringBuilder();
         Random rnd = new Random();
-        while (salt.length() < 18) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
+        while (booking.length() < 18) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * BOOKINGCHARS.length());
+            booking.append(BOOKINGCHARS.charAt(index));
         }
-        String saltStr = salt.toString();
+        String saltStr = booking.toString();
+
+
 
         HashMap<String, Object> bookingMap = new HashMap<>();
-        bookingMap.put("pid", productRandomKey);
+        FirebaseAuth firebaseAuth;
+        firebaseAuth= FirebaseAuth.getInstance();
+        userId= firebaseAuth.getInstance().getCurrentUser().getUid();
+        bookingMap.put("Bid",userId );
         bookingMap.put("date", date);
-        bookingMap.put("time", time);
+//        bookingMap.put("time", time);
         bookingMap.put("image", downloadImageUrl);
         bookingMap.put("sname", Sname);
         bookingMap.put("semail", Semail);
@@ -427,6 +440,8 @@ public class BookingFormActivity extends AppCompatActivity  {
                             loadingBar.dismiss();
                             Toast.makeText(BookingFormActivity.this, "Booking is successful",
                                     Toast.LENGTH_SHORT).show();
+
+//                            sendReminder(date);
                         } else {
                             loadingBar.dismiss();
                             String message = task.getException().toString();
@@ -437,6 +452,66 @@ public class BookingFormActivity extends AppCompatActivity  {
                 });
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void sendReminder(String date) {
+
+        String str = date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(str, formatter).minusMinutes(2);
+
+        long sendNotification = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
+                LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("sending reminder");
+                sendmail();
+            }
+        };
+        timer.schedule(timerTask, sendNotification);
+    }
+
+
+    private void sendmail() {
+        String email="ruthmuasya2000@gmail.com";
+        String senderPassword="grcwtaoqrvhgwyox";
+        System.out.println("email is ============"+email+ "and  password======"+senderPassword);
+        String messageToSend = "Hello Sir, Please check the appointments that have been send to you 15 minutes before start";
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth","true");
+        properties.put("mail.smtp.ssl.enable","true");
+        properties.put("mail.smtp.host","smtp.gmail.com");
+        properties.put("mail.smtp.port","465");
+
+        Session session= Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                //return super.getPasswordAuthentication();
+                return  new PasswordAuthentication(email, senderPassword);
+            }
+        });
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(email));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse
+                    ("fstfITVC@gmail.com"));//37869793VC
+            message.setSubject("Booking appointments");
+            message.setText(messageToSend);
+            Transport.send(message);
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
+        catch (MessagingException e) {
+            e.printStackTrace();
+
+        }
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+    }
+
 
     private void OpenGallery() {
         Intent galleryIntent = new Intent();
@@ -455,7 +530,7 @@ public class BookingFormActivity extends AppCompatActivity  {
         }
     }
 
-    private void dateDialog(EditText date) {
+    private void dateTimeDialog(EditText date) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -464,8 +539,21 @@ public class BookingFormActivity extends AppCompatActivity  {
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfTheMonth);
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd");
-                Date.setText(simpleDateFormat.format(calendar.getTime()));
+                TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hour, int minutes) {
+                        calendar.set(Calendar.HOUR_OF_DAY, hour);
+                        calendar.set(Calendar.MINUTE, minutes);
+
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd HH:mm");
+                        DateTime.setText(simpleDateFormat.format(calendar.getTime()));
+
+                    }
+                };
+
+                new TimePickerDialog(BookingFormActivity.this, timeSetListener, calendar.
+                        get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
+
 
             }
         };
