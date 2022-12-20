@@ -1,5 +1,9 @@
 package com.example.realtimeschedule.Model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,5 +56,19 @@ public class AvailableTime {
         return params;
     }
 
+    public String getNextAvailableTime() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+        Calendar calendar = Calendar.getInstance();
+        Date date = sdf.parse(this.getBookedUntil());
+        calendar.setTime(date);
+
+        // next user should be served after 20 minutes
+        calendar.add(Calendar.MINUTE, 30);
+
+        this.setBookedUntil(sdf.format(calendar));
+        // update to firebase
+
+        return this.getBookedUntil();
+    }
 
 }

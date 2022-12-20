@@ -4,8 +4,8 @@ import java.util.Comparator;
 
 public class User {
 
-    public String name, email, phone, password, uid;
-    private String image;
+    private String uid,name, email, phone, password, image;
+    private int priority = UserPriorities.PRIORITY_STUDENT;
 
     public User() {}
 
@@ -21,13 +21,12 @@ public class User {
                 '}';
     }
 
-    public User(String name, String image, String email, String phone, String password, String uid) {
-        this.name = name;
-        this.image = image;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.uid = uid;
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public String getName() {

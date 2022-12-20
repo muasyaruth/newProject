@@ -59,7 +59,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                                 calendar.set(0, 0, 0, t1Hr, t1Min);
 
                                 from = android.text.format.DateFormat.format(
-                                        "kk:mm aa", calendar).toString();
+                                        "hh:mm aa", calendar).toString();
                                 timer1.setText(from);
                             }
                         }, t1Hr, t1Min, false);
@@ -82,7 +82,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                                 calendar.set(0, 0, 0, t2Hr, t2Min);
 
                                 to = android.text.format.DateFormat.format(
-                                        "kk:mm aa", calendar).toString();
+                                        "hh:mm aa", calendar).toString();
 
                                 timer2.setText(to);
                             }

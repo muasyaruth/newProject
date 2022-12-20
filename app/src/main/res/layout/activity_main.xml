@@ -40,7 +40,7 @@
         android:layout_centerHorizontal="true"/>
 
     <Button
-        android:id="@+id/bookingForm"
+        android:id="@+id/btnBook"
         android:layout_width="250dp"
         android:layout_height="55dp"
         android:layout_centerHorizontal="true"
