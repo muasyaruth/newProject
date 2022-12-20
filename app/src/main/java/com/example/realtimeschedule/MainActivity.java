@@ -16,10 +16,6 @@ public class MainActivity extends AppCompatActivity {
     TextView name, email, phone;
     String UName, UEmail, UPhone;
 
-    public static void redirectActivity(GiveDayAndTimeAvailable giveDayAndTimeAvailable,
-                                        Class<MainActivity> mainActivityClass) {
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         viewUsers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), BookingFormActivity.class));
+                startActivity(new Intent(getApplicationContext(), BookingSuccessActivity.class));
             }
         });
 

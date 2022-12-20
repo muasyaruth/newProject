@@ -1,5 +1,6 @@
 package com.example.realtimeschedule;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -11,6 +12,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.realtimeschedule.Model.AvailableTime;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -27,10 +31,8 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
     Button btn;
 
     int t1Hr, t1Min, t2Hr, t2Min;
-    SimpleDateFormat sdf;
     private DatabaseReference ref;
-    public static String UserName;
-    String t1, t2;
+    public static String from, to;
 
 
     @Override
@@ -38,8 +40,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give_day_and_time_available);
 
-        ref = FirebaseDatabase.getInstance().getReference("Slots").child("Today");
-
+        ref = FirebaseDatabase.getInstance().getReference("slots").child("today");
         timer1 = findViewById(R.id.timer1);
         timer2 = findViewById(R.id.timer2);
         btn = findViewById(R.id.monday);
@@ -57,12 +58,11 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                                 Calendar calendar = Calendar.getInstance();
                                 calendar.set(0, 0, 0, t1Hr, t1Min);
 
-                                String dateAndroid = android.text.format.DateFormat.format(
+                                from = android.text.format.DateFormat.format(
                                         "kk:mm aa", calendar).toString();
-
-                                timer1.setText(dateAndroid);
+                                timer1.setText(from);
                             }
-                        }, 12, 0, false);
+                        }, t1Hr, t1Min, false);
                 timePickerDialog.updateTime(t1Hr, t1Min);
                 timePickerDialog.show();
             }
@@ -81,12 +81,13 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                                 Calendar calendar = Calendar.getInstance();
                                 calendar.set(0, 0, 0, t2Hr, t2Min);
 
-                                String dateAndroid = android.text.format.DateFormat.format(
+                                to = android.text.format.DateFormat.format(
                                         "kk:mm aa", calendar).toString();
 
-                                timer2.setText(dateAndroid);
+                                timer2.setText(to);
                             }
-                        }, 12, 0, false);
+                        }, t2Hr, t2Min, false);
+
                 timePickerDialog.updateTime(t2Hr, t2Min);
                 timePickerDialog.show();
             }
@@ -96,69 +97,27 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
             @SuppressLint("SimpleDateFormat")
             @Override
             public void onClick(View v) {
-                int min = findMinutes();
-
-                Calendar calendar = Calendar.getInstance();
-                ArrayList<String> results = new ArrayList<>();
-                sdf = new SimpleDateFormat("hh:mm aaa");
-
-                calendar.set(0, 0, 0, t1Hr, t1Min);
-
-                for (int i = 0; i < min; i++) {
-                    String day1 = sdf.format(calendar.getTime());
-
-                    // add 15 minutes to the current time; the hour adjusts automatically!
-                    calendar.add(Calendar.MINUTE, 15);
-                    String day2 = sdf.format(calendar.getTime());
-
-                    //String day = day1 + " - " + day2;
-                    results.add(day1);
+                // validate correct time selected
+                if(from.isEmpty() || to.isEmpty()){
+                    Toast.makeText(getApplicationContext(), "Please select valid Time slot", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                if (results.size() != 0) {
-                    ref.setValue(null);
-                    for (String slot : results) {
-                        ref.child(slot).setValue("Available");
-                        Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
-                        MainActivity.redirectActivity(GiveDayAndTimeAvailable.this, MainActivity.class);
-                        finish();
+                // proceed
+                AvailableTime availableTime = new AvailableTime();
+                availableTime.setDay("today");
+                availableTime.setFrom(from);
+                availableTime.setTo(to);
+                availableTime.setBookedUntil(from); // no bookings as for now
+
+                ref.setValue(availableTime.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(GiveDayAndTimeAvailable.this, "Available time updated successfully", Toast.LENGTH_SHORT).show();
                     }
-                } else
-                    Toast.makeText(getApplicationContext(), "Please select valid Time slot", Toast.LENGTH_SHORT).show();
+                });
+
             }
         });
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private int findMinutes() {
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(0, 0, 0, t1Hr, t1Min);
-        String d1 = android.text.format.DateFormat.format(
-                "kk:mm", calendar).toString();
-
-        calendar.set(0, 0, 0, t2Hr, t2Min);
-        String d2 = android.text.format.DateFormat.format(
-                "kk:mm", calendar).toString();
-
-        sdf = new SimpleDateFormat("hh:mm");
-
-        Date date1 = null;
-        try {
-            date1 = sdf.parse(d1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Date date2 = null;
-        try {
-            date2 = sdf.parse(d2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        long diff = date2.getTime() - date1.getTime();
-        int min = (int) (diff / (1000 * 60));
-        min = min / 120;
-        return (min);
     }
 }

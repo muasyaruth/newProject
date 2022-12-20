@@ -55,7 +55,7 @@
             android:name=".BookingsActivity"
             android:exported="false" />
         <activity
-            android:name=".BookingFormActivity"
+            android:name=".BookingSuccessActivity"
             android:exported="false" />
         <activity
             android:name=".AdminTasks"
