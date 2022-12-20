@@ -1,6 +1,7 @@
 package com.example.realtimeschedule.ViewHolder;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     public TextView User_Name, Phones,email, User_Id;
     public ItemClickListener itemClickListener;
+    public ImageView userImage;
 
     public UserViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -21,6 +23,7 @@ public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         Phones=itemView.findViewById(R.id.Phone);
         email=itemView.findViewById(R.id.userEmail);
         User_Id=itemView.findViewById(R.id.userId);
+        userImage= itemView.findViewById(R.id.userImageView);
     }
 
     @Override

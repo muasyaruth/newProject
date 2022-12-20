@@ -18,6 +18,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 public class UsersActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
@@ -58,6 +59,7 @@ public class UsersActivity extends AppCompatActivity {
                 userViewHolder.Phones.setText("Phone: "+user.getPhone());
                 userViewHolder.email.setText("Email: "+ user.getEmail());
                 userViewHolder.User_Id.setText("User ID: "+ user.getUid());
+                Picasso.get().load(user.getImage()).into(userViewHolder.userImage);
             }
 
             @NonNull

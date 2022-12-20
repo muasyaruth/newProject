@@ -1,67 +1,41 @@
 package com.example.realtimeschedule;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
-public class Register extends AppCompatActivity {
+public class VCRegistration extends AppCompatActivity {
     private Button register;
     private TextView signup;
     private EditText editTextFullname, editTextEmail, editTextPassword, Phone, location, address;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
-    private static final int GalleryPick = 1;
-    private Uri ImageUri;
-    private String UserRegisterRandomKey, downloadImageUrl;
-    private StorageReference userImagesRef;
     private String username, email;
-    private ImageView profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-
-        profile= findViewById(R.id.profilePic);
-        userImagesRef = FirebaseStorage.getInstance().getReference().child("User Images");
-
+        setContentView(R.layout.activity_vcregistration);
 
         mAuth = FirebaseAuth.getInstance();
         userRef= FirebaseDatabase.getInstance().getReference();
@@ -70,15 +44,8 @@ public class Register extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this,Login.class);
+                Intent intent = new Intent(VCRegistration.this,VCLogin.class);
                 startActivity(intent);
-            }
-        });
-
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                OpenGallery();
             }
         });
         register.setOnClickListener(new View.OnClickListener() {
@@ -127,48 +94,11 @@ public class Register extends AppCompatActivity {
                     location.requestFocus();
                     return;
                 }
-                if (ImageUri == null) {
-                    Toast.makeText(Register.this, "User image is mandatory...", Toast.LENGTH_SHORT).show();
-                }
                 else {
-                    final StorageReference filePath = userImagesRef.child(ImageUri.getLastPathSegment() + UserRegisterRandomKey + ".jpg");
-
-                    final UploadTask uploadTask = filePath.putFile(ImageUri);
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            String message = e.toString();
-                            Toast.makeText(Register.this, "Error: " + message, Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(Register.this, "Image uploaded Successfully...", Toast.LENGTH_SHORT).show();
-
-                            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                    if (!task.isSuccessful()) {
-                                        throw task.getException();
-                                    }
-
-                                    downloadImageUrl = filePath.getDownloadUrl().toString();
-                                    return filePath.getDownloadUrl();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        downloadImageUrl = task.getResult().toString();
-
-                                        Toast.makeText(Register.this, "got the user image Url Successfully...", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        }
-                    });
 
                     mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        private Object VCRegistration;
+
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
@@ -178,23 +108,22 @@ public class Register extends AppCompatActivity {
                                 /*RootRef.child("Users").child(currentUserId).setValue("");*/
                                 HashMap<String, String> users=new HashMap<>();
                                 users.put("uid", currentUserId);
-                                users.put("location", Location);
-                                users.put("address", Address);
-                                users.put("name", username);
-                                users.put("email", email);
-                                users.put("phone", phone);
-                                users.put("password",password);
-                                users.put("image", downloadImageUrl);
+                                users.put("loc", Location);
+                                users.put("add", Address);
+                                users.put("nam", username);
+                                users.put("mail", email);
+                                users.put("phoneNum", phone);
+                                users.put("pass",password);
 
                                 //specify if user is admin or normal user
                                 users.put("isUser", "1");
 
                                 //set path
-                                userRef.child("Users").child(currentUserId).setValue(users);
+                                userRef.child("VC").child(currentUserId).setValue(users);
                                 Toast.makeText(getApplicationContext(), "Account Created Successfully",Toast.LENGTH_SHORT).show();
                                 //loadingbar.dismiss();
                                 progressBar.setVisibility(View.GONE);
-                                Intent intent = new Intent(Register.this, MainActivity.class);
+                                Intent intent = new Intent(com.example.realtimeschedule.VCRegistration.this, BookingsActivity.class);
                                 intent.putExtra("currentPhone", phone);
                                 intent.putExtra("currentName", username);
                                 intent.putExtra("currentEmail", email);
@@ -214,7 +143,6 @@ public class Register extends AppCompatActivity {
                     });
 
                 }
-
             }
         });
         editTextFullname = (EditText) findViewById(R.id.fullname);
@@ -228,21 +156,6 @@ public class Register extends AppCompatActivity {
 //        email= editTextEmail.getText().toString();
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
-    }
-    private void OpenGallery() {
-        Intent galleryIntent = new Intent();
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, GalleryPick);
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
-            ImageUri = data.getData();
-            profile.setImageURI(ImageUri);
-        }
     }
 }

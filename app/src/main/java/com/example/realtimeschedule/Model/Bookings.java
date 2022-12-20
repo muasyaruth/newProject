@@ -2,13 +2,15 @@ package com.example.realtimeschedule.Model;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+
 public class Bookings {
 
     private String semail;
     private String sname;
     private String image;
     private String pid;
-    @ServerTimestamp
     private String date;
     private String time;
     private String currentDateTime;
@@ -17,31 +19,16 @@ public class Bookings {
     public Bookings() {
     }
 
-    public Bookings(String currentDateTime, String semail, String sname, String image,
-                    String pid, String date, String time, String designation) {
+
+    public Bookings(String semail, String sname, String image, String pid, String date, String time, String currentDateTime, String designation) {
         this.semail = semail;
-        this.currentDateTime = currentDateTime;
         this.sname = sname;
         this.image = image;
         this.pid = pid;
         this.date = date;
         this.time = time;
-        this.designation= designation;
-
-    }
-
-    @Override
-    public String toString() {
-        return "Bookings{" +
-                "semail='" + semail + '\'' +
-                ", sname='" + sname + '\'' +
-                ", image='" + image + '\'' +
-                ", pid='" + pid + '\'' +
-                ", date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                ", currentDateTime='" + currentDateTime + '\'' +
-                ", designation='" + designation + '\'' +
-                '}';
+        this.currentDateTime = currentDateTime;
+        this.designation = designation;
     }
 
     public String getSemail() {
@@ -88,14 +75,6 @@ public class Bookings {
         return time;
     }
 
-    public String getDesignation() {
-        return designation;
-    }
-
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
-
     public void setTime(String time) {
         this.time = time;
     }
@@ -106,5 +85,13 @@ public class Bookings {
 
     public void setCurrentDateTime(String currentDateTime) {
         this.currentDateTime = currentDateTime;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 }

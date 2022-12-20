@@ -4,6 +4,7 @@
     package="com.example.realtimeschedule">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -15,6 +16,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RealTimeSchedule"
         tools:targetApi="31">
+
+        <service
+            android:name="com.example.realtimeschedule.NotificationIntentService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver android:name="com.example.realtimeschedule.NotificationEventReceiver" />
+        <receiver android:name="com.example.realtimeschedule.NotificationServiceStarterReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".MyBookingDetails"
+            android:exported="false" />
+        <activity
+            android:name=".StartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VCLogin"
+            android:exported="false" />
+        <activity
+            android:name=".VCRegistration"
+            android:exported="false" />
         <activity
             android:name=".userProfile"
             android:exported="false" />

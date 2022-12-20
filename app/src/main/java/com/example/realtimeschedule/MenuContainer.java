@@ -60,6 +60,11 @@ public class MenuContainer extends AppCompatActivity implements NavigationView.O
                 startActivity(new Intent(getApplicationContext(),
                         Schedule.class));
                 return true;
+            case R.id.editSchedule:
+                //Toast.makeText(MenuContainer.this, "", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),
+                        GiveDayAndTimeAvailable.class));
+                return true;
         }
         return true;
     }

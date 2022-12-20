@@ -14,6 +14,7 @@
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/ic_baseline_schedule_24.xml" value="0.173" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/ic_baseline_service.xml" value="0.1875" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/profile_pic.xml" value="0.213" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/rectangle_fill.xml" value="0.173" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/rectangle_fill_black.xml" value="0.1" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/drawable/rectangle_fill_white.xml" value="0.1" />
@@ -43,10 +44,12 @@
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_main.xml" value="0.16032608695652173" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_main2.xml" value="0.20606884057971014" />
-        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_register.xml" value="0.12" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_my_booking_details.xml" value="0.1816123188405797" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_register.xml" value="0.1" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_schedule.xml" value="0.15670289855072464" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_service.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_services.xml" value="0.22447916666666667" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_start.xml" value="0.1816123188405797" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_time_slots.xml" value="0.18432971014492755" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_user.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_user_monday.xml" value="0.22447916666666667" />
@@ -54,6 +57,8 @@
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_uses.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_vc_monday.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_vc_wednesday.xml" value="0.22447916666666667" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_vclogin.xml" value="0.1816123188405797" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_vcregistration.xml" value="0.1816123188405797" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/activity_vcschedule.xml" value="0.1766304347826087" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/add_service.xml" value="0.1" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/Project-master/app/src/main/res/layout/appointment_item.xml" value="0.11730072463768115" />

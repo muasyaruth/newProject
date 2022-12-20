@@ -12,12 +12,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="15dp"
+            android:layout_centerVertical="true">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Edit VC Schedule"
+                android:layout_marginTop="30dp"
                 android:textStyle="bold"
                 android:textSize="20sp"/>
 
@@ -99,7 +101,7 @@
                     android:id="@+id/monday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Monday"
+                    android:text="Save time slots"
                     app:backgroundTint="#3A6A91" />
 
             </RelativeLayout>
