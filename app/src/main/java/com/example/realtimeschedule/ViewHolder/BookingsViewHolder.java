@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +24,7 @@ public class BookingsViewHolder extends RecyclerView.ViewHolder implements View.
     public String Sname, senderPassword, Semail, date, timeT, sDesignation;
     public ItemClickListener listener;
     public ArrayAdapter adapter;
-    public Button reschedule, save, cancel;
+    public Button btnServed, btnCancel;
     public AlertDialog dialog;
     public EditText timePicker;
 //    public Button save,cancel;
@@ -40,19 +41,9 @@ public class BookingsViewHolder extends RecyclerView.ViewHolder implements View.
 //        appointmentTime=(TextView) itemView.findViewById(R.id.BookingTime);
         designation=(TextView) itemView.findViewById(R.id.displayDesignation);
         timePicker= (EditText)itemView.findViewById(R.id.perfectTime);
-        save= (Button) itemView.findViewById(R.id.saveTime);
-        reschedule= (Button) itemView.findViewById(R.id.buttonReschedule);
-        cancel= (Button) itemView.findViewById(R.id.cancelTime);
-
-        reschedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(itemView.getContext(), BookingDetails.class);
-                view.getContext().startActivity(intent);
-            }
-        });
-
-
+        btnCancel= (Button) itemView.findViewById(R.id.saveTime);
+        btnServed= (Button) itemView.findViewById(R.id.btnServed);
+        btnCancel= (Button) itemView.findViewById(R.id.btnCancel);
     }
 
 

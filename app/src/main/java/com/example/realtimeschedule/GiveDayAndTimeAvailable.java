@@ -40,7 +40,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give_day_and_time_available);
 
-        ref = FirebaseDatabase.getInstance().getReference("slots").child("today");
+        ref = FirebaseDatabase.getInstance().getReference("Slots").child("Today");
         timer1 = findViewById(R.id.timer1);
         timer2 = findViewById(R.id.timer2);
         btn = findViewById(R.id.monday);

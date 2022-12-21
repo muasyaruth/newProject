@@ -142,14 +142,26 @@
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <Button
-            android:id="@+id/buttonReschedule"
+            android:id="@+id/btnServed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reschedule"
+            android:text="Mark as Served"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            app:layout_constraintRight_toLeftOf="@+id/btnServed"
+            app:layout_constraintTop_toBottomOf="@+id/textView8"
+            android:layout_marginEnd="30dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

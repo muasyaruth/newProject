@@ -20,7 +20,7 @@ public class BookingSuccessActivity extends AppCompatActivity  {
 
         okBtn = findViewById(R.id.btnOk);
         okBtn.setOnClickListener(view->{
-            startActivity(new Intent(this, MainActivity.class));
+            finish();
         });
 
     }
@@ -28,8 +28,5 @@ public class BookingSuccessActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(BookingSuccessActivity.this, MainActivity.class);
-
-        startActivity(intent);
     }
 }

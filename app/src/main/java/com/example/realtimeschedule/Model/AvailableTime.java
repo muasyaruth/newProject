@@ -59,16 +59,16 @@ public class AvailableTime {
     public String getNextAvailableTime() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
         Calendar calendar = Calendar.getInstance();
-        Date date = sdf.parse(this.getBookedUntil());
-        calendar.setTime(date);
-
-        // next user should be served after 20 minutes
-        calendar.add(Calendar.MINUTE, 30);
-
-        this.setBookedUntil(sdf.format(calendar));
-        // update to firebase
-
-        return this.getBookedUntil();
+        Date currentDate = sdf.parse(this.getBookedUntil());
+        calendar.setTime(currentDate);
+        updateNextAvailableTime(calendar);
+        return sdf.format(calendar.getTime());
     }
 
+    private void updateNextAvailableTime(Calendar calendar) throws ParseException {
+        // next user should be served after 20 minutes
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+        calendar.add(Calendar.MINUTE, 20);
+        this.setBookedUntil(sdf.format(calendar.getTime()));
+    }
 }

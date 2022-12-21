@@ -65,7 +65,6 @@ public class VCLogin extends AppCompatActivity {
                 }
             });
 
-            System.out.println("====================Time now================="+ LocalDateTime.now());
             reg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
