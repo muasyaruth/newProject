@@ -76,4 +76,24 @@ public class User {
     public void setImage(String image) {
         this.image = image;
     }
+
+    // get user type
+    public String getUserType(){
+        switch (priority){
+            case 1:
+                return "Student";
+            case 2:
+                return "School President";
+            case 3:
+                return "Lecturer";
+            case 4:
+                return "COD";
+            case 5:
+                return "Dean";
+            case 6:
+                return "Registrar";
+            default:
+                return "Unknown User type";
+        }
+    }
 }
