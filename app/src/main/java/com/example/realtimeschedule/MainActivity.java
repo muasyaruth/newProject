@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.realtimeschedule.Model.AvailableTime;
 import com.example.realtimeschedule.Model.Booking;
+import com.example.realtimeschedule.Model.BookingHelper;
+import com.example.realtimeschedule.Model.FirebaseHelper;
 import com.example.realtimeschedule.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         boookBtn.setOnClickListener(view-> {
-            String key = bookingsRef.push().getKey();
             // get next available time for booking
             loader.setMessage("Getting available time...");
             loader.setCancelable(true);
@@ -99,30 +100,13 @@ public class MainActivity extends AppCompatActivity {
                     // make new Booking
                     Booking booking = new Booking();
                     booking.setId(currentUser.getUid());
-                    try {
-                        booking.setDate(availableTime.getBookedUntil());
-                        // update to firebase
-                        bookingsRef.child(currentUser.getUid()).setValue(booking.toMap())
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(!task.isSuccessful()){
-                                            Toast.makeText(MainActivity.this, "Unable to reserve your booking. Please try again", Toast.LENGTH_LONG).show();
-                                            return;
-                                        }
-
-                                        // update available time for bookings for subsequent bookings
-                                        updateAvailableTime();
-                                        // booking successful. Move to booking success activity
-                                        startActivity(new Intent(getApplicationContext(), BookingSuccessActivity.class));
-                                    }
-                                });
-
-                        // error parsing next available time
-                    } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "Error parsing date "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
+                    booking.setDate(availableTime.getBookedUntil());
+                    /**
+                     *  Here we need to implement logic for re-ordering time based on priority
+                     *  of the user.
+                     */
+                    BookingHelper bHelper = new BookingHelper(MainActivity.this);
+                    bHelper.book(booking);
                 }
 
                 @Override
@@ -138,17 +122,5 @@ public class MainActivity extends AppCompatActivity {
         email.setText(currentUser.getEmail());
         phone.setText(currentUser.getPhone());
         Picasso.get().load(currentUser.getImage()).into(imageView);
-    }
-
-    /**
-     * Update available time so that next users will be scheduled after this time.
-     *
-     */
-    public void updateAvailableTime(){
-        try {
-            slotsRef.child("bookedUntil").setValue(availableTime.getNextAvailableTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 }
