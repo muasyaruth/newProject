@@ -24,7 +24,7 @@ public class FirebaseHelper {
     }
 
     public void getBookedUntil(){
-        this.child("slots").child("today").addValueEventListener(new ValueEventListener() {
+        ref.child("Slots").child("Today").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 AvailableTime availableTime = snapshot.getValue(AvailableTime.class);
@@ -37,4 +37,8 @@ public class FirebaseHelper {
             }
         });
     }
+
+    /**
+     * Some other important generic helper methods
+     */
 }

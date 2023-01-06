@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.realtimeschedule.Interface.OnHelperCompleteListener;
 import com.example.realtimeschedule.Model.AvailableTime;
 import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.Model.BookingHelper;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             loader.setMessage("Getting available time...");
             loader.setCancelable(true);
             loader.show();
+
             slotsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -96,17 +98,20 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Could not find any booking information by Admin", Toast.LENGTH_SHORT).show();
                         return;
                     }
+
                     availableTime = snapshot.getValue(AvailableTime.class);
                     // make new Booking
                     Booking booking = new Booking();
                     booking.setId(currentUser.getUid());
+                    booking.setPriority(currentUser.getPriority());
                     booking.setDate(availableTime.getBookedUntil());
                     /**
                      *  Here we need to implement logic for re-ordering time based on priority
                      *  of the user.
                      */
                     BookingHelper bHelper = new BookingHelper(MainActivity.this);
-                    bHelper.book(booking);
+                    bHelper.book(booking); // booking over network request
+                    bHelper.setOnCompleteListener(bookingHelperListener);
                 }
 
                 @Override
@@ -116,6 +121,24 @@ public class MainActivity extends AppCompatActivity {
             });
         });
     }
+
+    /**
+     * Listener for the progress of booking helper.
+     */
+    public OnHelperCompleteListener bookingHelperListener = new OnHelperCompleteListener() {
+        @Override
+        public void onSuccess(String message) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            // Booking success. Show booking success activity
+            startActivity(new Intent(MainActivity.this, BookingSuccessActivity.class));
+        }
+
+        @Override
+        public void onError(String errorMessage) {
+            // there was an issue in making booking.
+            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public  void initViews(){
         name.setText(currentUser.getName());
