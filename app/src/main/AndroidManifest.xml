@@ -97,7 +97,7 @@
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/splasStyle">
+            android:theme="@style/splashStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

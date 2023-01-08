@@ -26,13 +26,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.time.LocalDateTime;
 
 public class VCLogin extends AppCompatActivity {
-    private EditText email,password;
+    private EditText edtEmail,edtPassword;
     private ProgressBar progressBar;
-    private TextView forgetPassword;
+    private TextView resetPassword, tvRegister;
     private FirebaseAuth firebaseAuth;
-    String cphone;
-    Button reg;
-    CheckBox admin;
+    String email, password;
+    Button btnLogin;
 
     FirebaseAuth mAuth;
 
@@ -42,138 +41,95 @@ public class VCLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vclogin);
 
-            cphone=getIntent().getStringExtra("currentphone");
-            Button registerbtn = findViewById(R.id.register);
-            Button loginbtn = findViewById(R.id.login);
-            email = findViewById(R.id.email);
-            password = findViewById(R.id.password);
+            edtEmail = findViewById(R.id.email);
+            edtPassword = findViewById(R.id.password);
+            btnLogin = findViewById(R.id.login);
             progressBar = findViewById(R.id.progressbar);
-            forgetPassword=findViewById(R.id.forget);
+            resetPassword = findViewById(R.id.resetPassword);
             firebaseAuth = FirebaseAuth.getInstance();
-            reg= findViewById(R.id.register);
+            tvRegister= findViewById(R.id.tvRegister);
 
-            admin=(CheckBox) findViewById(R.id.adminCheck);
-            admin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (admin.isChecked()){
-                        startActivity(new Intent(getApplicationContext(), AdminTasks.class));
-                    }
-                    else{
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    }
-                }
-            });
-
-            reg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent=new Intent(VCLogin.this, BookingsActivity.class);
-                    startActivity(intent);
-                }
-            });
-
-            forgetPassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText resetMail = new EditText(v.getContext());
-                    AlertDialog.Builder passwordDialog = new AlertDialog.Builder(v.getContext());
-                    passwordDialog.setTitle("Reset Password");
-                    passwordDialog.setMessage("Enter Your Email to Receive Reset Link");
-                    passwordDialog.setView(resetMail);
-
-
-                    passwordDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String mail = resetMail.getText().toString();
-                            // try {
-
-                            firebaseAuth.sendPasswordResetEmail(mail).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    Toast.makeText(VCLogin.this, "Reset Link sent To Your Email", Toast.LENGTH_LONG).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(VCLogin.this, "Error! Reset Link is not sent" + e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                            //}
-//                        catch (Exception e){
-//                            Toast.makeText(Login.this, e.getMessage(),Toast.LENGTH_SHORT).show();
-//                        }
-                        }
-                    });
-                    passwordDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-
-                        }
-                    });
-                    passwordDialog.create().show();
-                }
-            });
-
-            loginbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String  tex_email = email.getText().toString();
-                    String tex_password = password.getText().toString();
-
-                    if (tex_email.isEmpty()) {
-                        email.setError("Email is required");
-                        email.requestFocus();
-                        return;
-                    }
-                    if (tex_password.isEmpty()) {
-                        password.setError("Password is required");
-                        password.requestFocus();
-                        return;
-                    }
-
-                    if (tex_password.length() < 6) {
-                        password.setError("Password must be more than 6 characters");
-                        password.requestFocus();
-                        return;
-                    }  else {
-                        login(tex_email,tex_password);
-                    }
-
-
-                }
-            });
-
-        }
-
-        @Override
-        public void onBackPressed() {
-            super.onBackPressed();
-//        Intent intent = new Intent(login2Activity.this, Homepage.class);
-//
-//        startActivity(intent);
-        }
-
-        private void login(String tex_email, String tex_password) {
+        btnLogin.setOnClickListener(view -> {
             progressBar.setVisibility(View.VISIBLE);
-            firebaseAuth.signInWithEmailAndPassword(tex_email,tex_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        progressBar.setVisibility(View.GONE);
-                        Intent intent = new Intent(VCLogin.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("currentphones", cphone);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(VCLogin.this, "You are not yet registered", Toast.LENGTH_LONG).show();
-                    }
+            email = edtEmail.getText().toString().trim();
+            password = edtPassword.getText().toString().trim();
+
+            // validate inputs
+            if(!validateInputs()){
+                progressBar.setVisibility(View.GONE);
+            }
+            // all validations complete
+            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(VCLogin.this, "Unable to login. "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    return;
                 }
+
+                // TODO - validate if logged in user is truly admin user
+
+                // login was successful
+                progressBar.setVisibility(View.GONE);
+                Intent intent = new Intent(VCLogin.this, AdminTasks.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             });
+        });
+
+            tvRegister.setOnClickListener(view -> {
+                startActivity(new Intent(VCLogin.this, BookingsActivity.class));
+            });
+
+            resetPassword.setOnClickListener(v -> {
+                EditText resetMail = new EditText(v.getContext());
+                AlertDialog.Builder passwordDialog = new AlertDialog.Builder(v.getContext());
+                passwordDialog.setTitle("Reset Password");
+                passwordDialog.setMessage("Enter Your Email to Receive Reset Link");
+                passwordDialog.setView(resetMail);
+
+                passwordDialog.setPositiveButton("Yes", (dialog, which) -> {
+                    String mail = resetMail.getText().toString();
+                    firebaseAuth.sendPasswordResetEmail(mail).addOnCompleteListener(task -> Toast.makeText(VCLogin.this, "Reset Link sent To Your Email", Toast.LENGTH_LONG).show()).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(VCLogin.this, "Error! Reset Link is not sent" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                });
+
+                passwordDialog.setNegativeButton("No", (dialog, which) -> { });
+
+                passwordDialog.create().show();
+            });
+        }
+
+    /**
+     * Validate entered inputs
+     */
+    public boolean validateInputs(){
+        if (email.isEmpty()) {
+            edtEmail.setError("Email is required");
+            edtEmail.requestFocus();
+            return false;
+        }
+        if (password.isEmpty()) {
+            edtPassword.setError("Password is required");
+            edtPassword.requestFocus();
+            return false;
+        }
+
+        if (password.length() < 6) {
+            edtPassword.setError("Password must be more than 6 characters");
+            edtPassword.requestFocus();
+            return false;
+        }
+
+        return  true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
