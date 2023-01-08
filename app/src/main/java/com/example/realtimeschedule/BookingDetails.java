@@ -117,12 +117,8 @@ public class BookingDetails extends AppCompatActivity {
                     message.setText(messageToSend);
                     Transport.send(message);
                     Toast.makeText(BookingDetails.this, "message sent successfully", Toast.LENGTH_SHORT).show();
-                } catch (AddressException e) {
+                } catch (MessagingException e) {
                     e.printStackTrace();
-                }
-                catch (MessagingException e) {
-                    e.printStackTrace();
-
                 }
 
                 try {

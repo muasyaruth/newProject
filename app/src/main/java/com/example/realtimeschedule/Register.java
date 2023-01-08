@@ -7,16 +7,12 @@ import androidx.annotation.NonNull;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,18 +23,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Register extends AppCompatActivity {
     private Button register;
@@ -70,7 +61,7 @@ public class Register extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Register.this,Login.class);
+                Intent intent = new Intent(Register.this, UserLoginActivity.class);
                 startActivity(intent);
             }
         });
