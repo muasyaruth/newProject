@@ -55,7 +55,7 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull UserViewHolder userViewHolder, int i, @NonNull User user) {
 
-                userViewHolder.User_Name.setText("User Name: "+ user.getName());
+                userViewHolder.User_Name.setText("User Name: "+ user.getUsername());
                 userViewHolder.Phones.setText("Phone: "+user.getPhone());
                 userViewHolder.email.setText("Email: "+ user.getEmail());
                 userViewHolder.User_Id.setText("User ID: "+ user.getUid());

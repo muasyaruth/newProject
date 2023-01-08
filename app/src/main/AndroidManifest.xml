@@ -105,7 +105,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".UserRegisterActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

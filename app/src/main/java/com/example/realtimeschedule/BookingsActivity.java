@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,17 +30,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 //How To Sort My Recyclerview According To Date And Time With Examples
 public class BookingsActivity extends AppCompatActivity {
@@ -97,7 +84,7 @@ public class BookingsActivity extends AppCompatActivity {
 
                         user = snapshot.getValue(User.class);
                         // render UI
-                        bookingsViewHolder.clientName.setText(user.getName());
+                        bookingsViewHolder.clientName.setText(user.getUsername());
                         bookingsViewHolder.clientEmail.setText(user.getEmail());
                         bookingsViewHolder.designation.setText(user.getUserType());
                         bookingsViewHolder.appointmentDate.setText(booking.getDate());

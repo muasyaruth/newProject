@@ -13,7 +13,7 @@ android:paddingTop="15dp"
 android:paddingBottom="15dp"
 tools:context=".VCRegistration">
 <ScrollView
-    android:id="@+id/scrolReg"
+    android:id="@+id/scrollReg"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
@@ -59,7 +59,7 @@ tools:context=".VCRegistration">
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/scrolReg" />
+                app:layout_constraintTop_toTopOf="@+id/scrollReg" />
 
 
             <FrameLayout
@@ -72,7 +72,7 @@ tools:context=".VCRegistration">
                 tools:targetApi="p">
 
                 <EditText
-                    android:id="@+id/fullname"
+                    android:id="@+id/fullName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"

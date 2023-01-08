@@ -5,18 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="70dp"
-    android:layout_marginBottom="70dp"
     android:background="@drawable/img"
     android:padding="15dp"
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
-    tools:context=".Register">
+    tools:context=".UserRegisterActivity">
     <ScrollView
-        android:id="@+id/scrolReg"
+        android:id="@+id/scrollReg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +23,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
 
             <ProgressBar
                 android:id="@+id/progressbar"
@@ -34,10 +32,11 @@
                 android:layout_height="wrap_content"
                 android:foregroundGravity="center"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:flow_verticalBias="1.0"
+                />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -48,27 +47,27 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-
                 <TextView
                     android:id="@+id/textViewReg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="REGISTER"
+                    android:text="Register"
                     android:textColor="@color/White"
                     android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/scrolReg" />
+                    app:layout_constraintTop_toTopOf="@+id/scrollReg" />
 
                 <ImageView
                     android:layout_width="80dp"
                     android:id="@+id/profilePic"
                     android:layout_height="80dp"
                     android:src="@drawable/profile_pic"
-                    android:layout_gravity="center_horizontal"/>
-
+                    android:tooltipText="Select Profile Picture"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="Profile Picture"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -80,13 +79,14 @@
                     tools:targetApi="p">
 
                     <EditText
-                        android:id="@+id/fullname"
+                        android:id="@+id/username"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:backgroundTint="@color/colorPrimaryDark"
                         android:hint="Username"
                         android:inputType="textEmailAddress"
+                        android:background="@drawable/shape_edt_bg"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:textColor="@color/colorPrimaryDark"
@@ -110,6 +110,7 @@
                         android:layout_gravity="center_horizontal"
                         android:backgroundTint="@color/colorPrimaryDark"
                         android:hint="Email"
+                        android:background="@drawable/shape_edt_bg"
                         android:inputType="textEmailAddress"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
@@ -117,31 +118,6 @@
                         android:textColorHint="@color/colorPrimaryDark"
                         android:textStyle="bold" />
                 </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_margin="20dp"
-                    android:background="@drawable/white_border"
-                    android:elevation="10dp"
-                    android:outlineAmbientShadowColor="@android:color/darker_gray"
-                    tools:targetApi="p">
-
-                    <EditText
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:hint="Password"
-                        android:inputType="textEmailAddress"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textColorHint="@color/colorPrimaryDark"
-                        android:textStyle="normal" />
-                </FrameLayout>
-
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -158,6 +134,7 @@
                         android:layout_gravity="center_horizontal"
                         android:backgroundTint="@color/colorPrimaryDark"
                         android:hint="Phone"
+                        android:background="@drawable/shape_edt_bg"
                         android:inputType="phone"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
@@ -165,7 +142,6 @@
                         android:textColorHint="@color/colorPrimaryDark"
                         android:textStyle="bold" />
                 </FrameLayout>
-
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -176,20 +152,20 @@
                     tools:targetApi="p">
 
                     <EditText
-                        android:id="@+id/Location"
+                        android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:backgroundTint="@color/colorPrimaryDark"
-                        android:hint="Location"
-                        android:inputType="textEmailAddress"
+                        android:hint="Password"
+                        android:background="@drawable/shape_edt_bg"
+                        android:inputType="textPassword"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:textColor="@color/colorPrimaryDark"
                         android:textColorHint="@color/colorPrimaryDark"
-                        android:textStyle="bold" />
+                        android:textStyle="normal" />
                 </FrameLayout>
-
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -200,19 +176,54 @@
                     tools:targetApi="p">
 
                     <EditText
-                        android:id="@+id/Address"
+                        android:id="@+id/cPassword"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:backgroundTint="@color/colorPrimaryDark"
-                        android:hint="Adress"
-                        android:inputType="textEmailAddress"
+                        android:hint="Confirm Password"
+                        android:background="@drawable/shape_edt_bg"
+                        android:inputType="textPassword"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:textColor="@color/colorPrimaryDark"
                         android:textColorHint="@color/colorPrimaryDark"
-                        android:textStyle="bold" />
+                        android:textStyle="normal" />
                 </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:elevation="10dp"
+                    android:outlineAmbientShadowColor="@android:color/darker_gray"
+                    android:background="@drawable/white_border"
+                    tools:targetApi="p">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="User type"
+                       android:textSize="18sp"
+                       android:textColor="@color/colorPrimaryDark"
+                       android:textStyle="normal"
+                       android:gravity="center_vertical"
+                       android:layout_marginTop="10dp"
+                       android:paddingLeft="16dp"
+                       android:paddingRight="16dp"
+                       />
+
+                    <Spinner
+                        android:id="@+id/spUserTypes"
+                        android:layout_width="wrap_content"
+                        android:minWidth="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="end"
+                        android:minHeight="48dp"
+                        tools:ignore="SpeakableTextPresentCheck"
+                        android:textColor="@color/colorPrimaryDark"/>
+                </FrameLayout>
+
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -227,11 +238,11 @@
                     tools:targetApi="p">
 
                     <Button
-                        android:id="@+id/register"
+                        android:id="@+id/btnRegister"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="?attr/selectableItemBackground"
-                        android:text="Signup"
+                        android:text="Register"
                         android:textAllCaps="false"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="20sp" />
@@ -240,7 +251,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_margin="20dp"
-                    android:background="@drawable/white_border"
                     android:elevation="10dp"
                     android:outlineAmbientShadowColor="@android:color/darker_gray"
                     tools:targetApi="p">
@@ -255,16 +265,18 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_weight="1"
-                            android:text="Do you have an account?" />
+                            android:text="Already have and account?"
+                            android:textSize="20sp"/>
 
                         <TextView
-                            android:id="@+id/signup"
+                            android:id="@+id/tvLogin"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_weight="1"
-                            android:text="SIGN UP"
-                            android:textColor="@color/colorAccent"/>
+                            android:text="Login"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"/>
                     </LinearLayout>
                 </FrameLayout>
             </LinearLayout>

@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,10 +17,7 @@ import com.example.realtimeschedule.Interface.OnHelperCompleteListener;
 import com.example.realtimeschedule.Model.AvailableTime;
 import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.Model.BookingHelper;
-import com.example.realtimeschedule.Model.FirebaseHelper;
 import com.example.realtimeschedule.Model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,8 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.text.ParseException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -141,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public  void initViews(){
-        name.setText(currentUser.getName());
+        name.setText(currentUser.getUsername());
         email.setText(currentUser.getEmail());
         phone.setText(currentUser.getPhone());
         Picasso.get().load(currentUser.getImage()).into(imageView);

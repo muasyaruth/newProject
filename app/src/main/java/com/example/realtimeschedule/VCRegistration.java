@@ -3,7 +3,6 @@ package com.example.realtimeschedule;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -145,7 +144,7 @@ public class VCRegistration extends AppCompatActivity {
                 }
             }
         });
-        editTextFullname = (EditText) findViewById(R.id.fullname);
+        editTextFullname = (EditText) findViewById(R.id.fullName);
         editTextEmail    = (EditText) findViewById(R.id.email);
         Phone=findViewById(R.id.phone);
         editTextPassword = (EditText) findViewById(R.id.password);

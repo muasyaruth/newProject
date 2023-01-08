@@ -47,7 +47,7 @@ public class UserLoginActivity extends Activity {
 
 
         tvRegister.setOnClickListener(view -> {
-            Intent intent=new Intent(UserLoginActivity.this,Register.class);
+            Intent intent=new Intent(UserLoginActivity.this, UserRegisterActivity.class);
             startActivity(intent);
         });
 
@@ -134,7 +134,7 @@ public class UserLoginActivity extends Activity {
                     finish();
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(UserLoginActivity.this, "Unable to log in. Error: "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(UserLoginActivity.this, "Unable to log in. "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });

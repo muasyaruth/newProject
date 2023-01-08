@@ -1,21 +1,22 @@
 package com.example.realtimeschedule.Model;
 
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
 
-    private String uid,name, email, phone, password, image;
+    private String uid, username, email, phone, image;
     private int priority = UserPriorities.PRIORITY_STUDENT;
+    private boolean isAdmin = false;
 
     public User() {}
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
                 ", uid='" + uid + '\'' +
                 ", image='" + image + '\'' +
                 '}';
@@ -29,12 +30,12 @@ public class User {
         this.priority = priority;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -53,14 +54,6 @@ public class User {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUid() {
         return uid;
     }
@@ -75,6 +68,14 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     // get user type
@@ -95,5 +96,16 @@ public class User {
             default:
                 return "Unknown User type";
         }
+    }
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", uid);
+        params.put("username", username);
+        params.put("email", email);
+        params.put("phone", phone);
+        params.put("image", image);
+        params.put("isAdmin", isAdmin);
+        return  params;
     }
 }
