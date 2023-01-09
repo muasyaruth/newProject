@@ -20,18 +20,22 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import io.reactivex.rxjava3.internal.schedulers.ScheduledRunnable;
+
 public class BookingHelper {
     private Booking booking;
     private Context context;
     OnHelperCompleteListener listener;
     DatabaseReference bookingsRef, slotsRef;
+    private Scheduler scheduler;
     public BookingHelper(Context context){
         this.context = context;
         bookingsRef = FirebaseDatabase.getInstance().getReference("Bookings");
-        slotsRef = FirebaseDatabase.getInstance().getReference("Slots").child("Today");
+        slotsRef = FirebaseDatabase.getInstance().getReference("Slots");
+        scheduler = new Scheduler();
     }
 
-    public void book(Booking booking){
+    public BookingHelper book(Booking booking){
     try {
         // update to firebase
         bookingsRef.child(booking.getId()).setValue(booking.toMap())
@@ -41,11 +45,11 @@ public class BookingHelper {
                         if (listener != null) listener.onError("Unable to reserve your booking. Please try again");
                         return;
                     }
-                    // update available time for bookings for subsequent bookings
-                    updateAvailableTime(booking.getDate());
+                    // update scheduler
+                    updateScheduler();
                     // booking successful. Move to booking success activity
                     if (listener != null ) listener.onSuccess("Booking success");
-//                    (context).startActivity(new Intent(context, BookingSuccessActivity.class));
+//
                 });
 
         // error parsing next available time
@@ -53,24 +57,47 @@ public class BookingHelper {
         Toast.makeText(context, "Error parsing date "+e.getMessage(), Toast.LENGTH_SHORT).show();
         e.printStackTrace();
     }
+
+    return this;
 }
 
     /**
-     * Update available time so that next users will be scheduled after this time.
-     *
+     * Set scheduler to use for this booking
      */
-    private void updateAvailableTime(String currentBookingDate) {
+    public BookingHelper setScheduler(Scheduler scheduler){
+        this.scheduler = scheduler;
+        return this;
+    }
+
+    /**
+     * Update scheduler information for subsequent bookings
+     */
+    private void updateScheduler() {
+        // check if there is any time available this day
+        if(scheduler.getCurrent().equals(scheduler.getEnd())){
+            // update scheduler to use the following day
+            // check also if the week has ended and start a fresh week
+            if(scheduler.getDayOfWeek() >= 5){
+                // Office is closed on weekends. Start a new week
+                scheduler.setDayOfWeek(0);
+            }else{
+                // not a weekend. Update the next day
+                scheduler.setDayOfWeek(scheduler.getDayOfWeek()+1);
+            }
+        }
+        // update the scheduler's time for the next client
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
             Calendar calendar = Calendar.getInstance();
-            Date currentDate = sdf.parse(currentBookingDate);
+            Date currentDate = sdf.parse(scheduler.getCurrent());
             calendar.setTime(currentDate);
             // next client to be served after 30 minutes
             calendar.add(Calendar.MINUTE, 30);
 
-            slotsRef.child("bookedUntil").setValue(sdf.format(calendar.getTime()));
+            scheduler.setCurrent(sdf.format(calendar.getTime()));
+            Log.d("Scheduler", scheduler.toMap().toString());
+            slotsRef.child("scheduler").setValue(scheduler.toMap());
         } catch (ParseException e) {
-            Log.d("BookedUntil", "Error formatting booking date. Error: "+e.getMessage());
             e.printStackTrace();
         }
     }

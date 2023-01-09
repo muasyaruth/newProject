@@ -50,7 +50,8 @@ public class VCLogin extends AppCompatActivity {
             tvRegister= findViewById(R.id.tvRegister);
 
         btnLogin.setOnClickListener(view -> {
-            progressBar.setVisibility(View.VISIBLE);
+            startActivity(new Intent(this, AdminTasks.class));
+           /* progressBar.setVisibility(View.VISIBLE);
             email = edtEmail.getText().toString().trim();
             password = edtPassword.getText().toString().trim();
 
@@ -74,7 +75,7 @@ public class VCLogin extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
-            });
+            });*/
         });
 
             tvRegister.setOnClickListener(view -> {

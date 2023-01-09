@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Scheduler {
-    private String current, end, nextDay;
+    private String current, end;
+    int dayOfWeek = 0;
 
     public Scheduler() {
         // required default constructor
@@ -26,19 +27,30 @@ public class Scheduler {
         this.end = end;
     }
 
-    public String getNextDay() {
-        return nextDay;
+    /**
+     * Working days ordered in zero-based indexing
+     * 0 - Mon
+     * 1- Tue
+     * 2- Wed
+     * 3- Thur
+     * 4- Fri
+     * 5- Sat
+     * 6- Sun
+     * @return
+     */
+    public int getDayOfWeek() {
+        return dayOfWeek;
     }
 
-    public void setNextDay(String nextDay) {
-        this.nextDay = nextDay;
+    public void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
     }
 
     public Map<String, Object> toMap(){
         Map<String, Object> params = new HashMap<>();
         params.put("current", current);
         params.put("end", end);
-        params.put("nextDay", nextDay);
+        params.put("dayOfWeek", dayOfWeek);
         return params;
     }
 }

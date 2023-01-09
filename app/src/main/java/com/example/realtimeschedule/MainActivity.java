@@ -14,9 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.realtimeschedule.Interface.OnHelperCompleteListener;
-import com.example.realtimeschedule.Model.AvailableTime;
 import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.Model.BookingHelper;
+import com.example.realtimeschedule.Model.Scheduler;
 import com.example.realtimeschedule.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,13 +29,13 @@ import com.squareup.picasso.Picasso;
 
 
 public class MainActivity extends AppCompatActivity {
-    Button boookBtn;
+    Button bookBtn;
     TextView name, email, phone;
     ImageView imageView;
     FirebaseUser firebaseUser;
     DatabaseReference usersRef, bookingsRef, slotsRef;
     User currentUser;
-    AvailableTime availableTime;
+    Scheduler scheduler;
     ProgressDialog loader;
 
     @Override
@@ -47,16 +47,18 @@ public class MainActivity extends AppCompatActivity {
         email= findViewById(R.id.textViewEmailPass);
         phone= findViewById(R.id.textViewPhone);
         imageView= findViewById(R.id.imageView2);
-        boookBtn = findViewById(R.id.btnBook);
+        bookBtn = findViewById(R.id.btnBook);
         loader = new ProgressDialog(this);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         bookingsRef = FirebaseDatabase.getInstance().getReference("Bookings");
-        slotsRef = FirebaseDatabase.getInstance().getReference("Slots").child("Today");
+        slotsRef = FirebaseDatabase.getInstance().getReference("Slots");
 
         loader.setMessage("Getting your info...");
         loader.setCancelable(false);
         loader.show();
+
+         //Get current user info from firebase and render profile
         usersRef.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 currentUser = snapshot.getValue(User.class);
                 initViews();
             }
@@ -77,35 +78,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        boookBtn.setOnClickListener(view-> {
+        // make a booking
+        bookBtn.setOnClickListener(view-> {
             // get next available time for booking
             loader.setMessage("Getting available time...");
-            loader.setCancelable(true);
             loader.show();
-
-            slotsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            // load information saved in scheduler
+            slotsRef.child("scheduler").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     loader.dismiss();
                     if(!snapshot.exists()){
                         // no data found
-                        Toast.makeText(MainActivity.this, "Could not find any booking information by Admin", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Admin is currently accepting no more applications or is not available.", Toast.LENGTH_LONG).show();
                         return;
                     }
 
-                    availableTime = snapshot.getValue(AvailableTime.class);
+                    scheduler = snapshot.getValue(Scheduler.class);
                     // make new Booking
                     Booking booking = new Booking();
                     booking.setId(currentUser.getUid());
                     booking.setPriority(currentUser.getPriority());
-                    booking.setDate(availableTime.getBookedUntil());
+                    booking.setDate(scheduler.getCurrent());
+
                     /**
                      *  Here we need to implement logic for re-ordering time based on priority
                      *  of the user.
                      */
                     BookingHelper bHelper = new BookingHelper(MainActivity.this);
-                    bHelper.book(booking); // booking over network request
-                    bHelper.setOnCompleteListener(bookingHelperListener);
+                    bHelper.setScheduler(scheduler) // for updating scheduling time
+                            .book(booking) // booking over network request
+                            .setOnCompleteListener(bookingHelperListener);
                 }
 
                 @Override
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public  void initViews(){
+    private void initViews(){
         name.setText(currentUser.getUsername());
         email.setText(currentUser.getEmail());
         phone.setText(currentUser.getPhone());

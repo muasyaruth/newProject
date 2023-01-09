@@ -7,6 +7,7 @@ public class Booking  {
     private String id, date;
     private int priority = 1;
     private boolean served = false;
+    private User user;
 
     public Booking() {
         // required public constructor
@@ -42,6 +43,20 @@ public class Booking  {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    /**
+     * User object will no be stored in firebase but just
+     * to create the relationship between a user and a booking
+     * @return
+     */
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Map<String , Object> toMap(){

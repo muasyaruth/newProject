@@ -105,10 +105,8 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
 
                 // proceed
                 AvailableTime availableTime = new AvailableTime();
-                availableTime.setDay("today");
                 availableTime.setFrom(from);
                 availableTime.setTo(to);
-                availableTime.setBookedUntil(from); // no bookings as for now
 
                 ref.setValue(availableTime.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

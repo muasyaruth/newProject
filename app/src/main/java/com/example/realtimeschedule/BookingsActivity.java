@@ -17,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.realtimeschedule.Adapter.BookingsAdapter;
 import com.example.realtimeschedule.Model.Booking;
+import com.example.realtimeschedule.Model.BookingComparator;
+import com.example.realtimeschedule.Model.Scheduler;
 import com.example.realtimeschedule.Model.User;
 import com.example.realtimeschedule.ViewHolder.BookingsViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.common.data.DataBufferSafeParcelable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,12 +35,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
 //How To Sort My Recyclerview According To Date And Time With Examples
 public class BookingsActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
+    DatabaseReference bookingsRef, usersRef;
+    FirebaseUser firebaseUser;
     User user;
     ProgressDialog loader;
+    ArrayList<User> users;
+    PriorityQueue<Booking> bookings;
+    BookingsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,55 +60,45 @@ public class BookingsActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         loader = new ProgressDialog(this);
-    }
+        users = new ArrayList<>();
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            bookings = new PriorityQueue<>(new BookingComparator());
+        }
 
-        final DatabaseReference bookingsRef = FirebaseDatabase.getInstance().getReference().child("Bookings");
-        final  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        bookingsRef = FirebaseDatabase.getInstance().getReference().child("Bookings");
+        usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        FirebaseRecyclerOptions<Booking> options = new FirebaseRecyclerOptions.Builder<Booking>()
-                .setQuery(bookingsRef, Booking.class)
-                .build();
+        adapter = new BookingsAdapter(this, bookings);
+        recyclerView.setAdapter(adapter);
 
-        FirebaseRecyclerAdapter<Booking, BookingsViewHolder> adapter = new FirebaseRecyclerAdapter
-                <Booking, BookingsViewHolder>(options) {
-            @RequiresApi(api = Build.VERSION_CODES.O)
+        loader.setMessage("Checking users information...");
+        loader.show();
+
+        usersRef.addValueEventListener(new ValueEventListener() {
             @Override
-            protected void onBindViewHolder(@NonNull BookingsViewHolder bookingsViewHolder,
-                                            int i, @NonNull Booking bookings) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    Toast.makeText(BookingsActivity.this, "No Users in the system currently.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                // get all registered users
+                for(DataSnapshot userSnapshot: snapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    // add user to all users list, to avoid quadratic network calls
+                    users.add(user);
+                }
+                // get bookings
+                getBookings();
+            }
 
-                Booking booking = getItem(i);
-                loader.setMessage("Getting booking information...");
-                loader.show();
-
-                usersRef.child(booking.getId()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        loader.dismiss();
-                        if(!snapshot.exists()){
-                            Toast.makeText(BookingsActivity.this, "No user associated with this booking was found.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        user = snapshot.getValue(User.class);
-                        // render UI
-                        bookingsViewHolder.clientName.setText(user.getUsername());
-                        bookingsViewHolder.clientEmail.setText(user.getEmail());
-                        bookingsViewHolder.designation.setText(user.getUserType());
-                        bookingsViewHolder.appointmentDate.setText(booking.getDate());
-                        Picasso.get().load(user.getImage()).into(bookingsViewHolder.imageView);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(BookingsActivity.this, "Error getting bookings "+error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(BookingsActivity.this, "Error getting users "+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
 
@@ -144,44 +146,44 @@ public class BookingsActivity extends AppCompatActivity {
 //                    });
 //
 //                }
-                
-                 bookingsViewHolder.btnServed.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(BookingsActivity.this, "You need to implement logic for scheduling", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-                // user will not be served, and will be removed from the queue
-                bookingsViewHolder.btnCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(BookingsActivity.this, "Your logic for rejecting user booking will appear here", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-                bookingsViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(BookingsActivity.this, "Booking item info clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @NonNull
+    /**
+     * Get bookings. This should be after all users have been loaded
+     */
+    public void getBookings(){
+        loader.setMessage("Getting users booking information...");
+        bookingsRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public BookingsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.booking_items_layout, parent, false);
-                BookingsViewHolder holder = new BookingsViewHolder(view);
-                return holder;
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                loader.dismiss();
 
+                if(!snapshot.exists()){
+                    Toast.makeText(BookingsActivity.this, "No booking information found. ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    Booking booking = ds.getValue(Booking.class);
+                    // associate it with a user
+                    for (User user: users){
+                        if(user.getUid().equals(booking.getId())){
+                            booking.setUser(user);
+                            break;
+                        }
+                    }
+                    // add to bookings array
+                    bookings.add(booking);
+                }
 
+                // notify recycler adapter
+                adapter.notifyDataSetChanged();
             }
 
-        };
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(BookingsActivity.this, "Unable to get bookings. "+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
     }
 }
