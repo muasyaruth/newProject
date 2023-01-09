@@ -10,18 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AvailableTime {
-    private String day = "Mon", from, to, bookedUntil;
+    private String from, to;
 
     public AvailableTime() {
         // required constructor
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
     }
 
     public String getFrom() {
@@ -40,21 +32,10 @@ public class AvailableTime {
         this.to = to;
     }
 
-
-    public void setBookedUntil(String bookedUntil) {
-        this.bookedUntil = bookedUntil;
-    }
-
-    public String getBookedUntil() {
-        return bookedUntil;
-    }
-
     public Map<String, Object> toMap() {
         Map<String, Object> params = new HashMap<>();
-        params.put("day", day);
         params.put("from", from);
         params.put("to", to);
-        params.put("bookedUntil", bookedUntil);
         return params;
     }
 }
