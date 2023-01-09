@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Booking  {
-    String id, date;
-    int priority = 1;
-    boolean served = false;
+    private String id, date;
+    private int priority = 1;
+    private boolean served = false;
 
     public Booking() {
         // required public constructor
