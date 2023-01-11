@@ -15,14 +15,26 @@ public class Scheduler {
         return current;
     }
 
+    /**
+     * The current time the scheduler is in
+     * @param current
+     */
     public void setCurrent(String current) {
         this.current = current;
     }
 
+    /**
+     *
+     * @return String The time VC will be available until
+     */
     public String getEnd() {
         return end;
     }
 
+    /**
+     * Set the time the time the VC will be available until
+     * @param end
+     */
     public void setEnd(String end) {
         this.end = end;
     }

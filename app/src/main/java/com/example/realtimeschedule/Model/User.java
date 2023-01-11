@@ -19,6 +19,8 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", uid='" + uid + '\'' +
                 ", image='" + image + '\'' +
+                ", priority='" + priority + '\'' +
+                ", isAdmin='" + isAdmin + '\'' +
                 '}';
     }
 
@@ -105,6 +107,7 @@ public class User {
         params.put("email", email);
         params.put("phone", phone);
         params.put("image", image);
+        params.put("priority", priority);
         params.put("isAdmin", isAdmin);
         return  params;
     }

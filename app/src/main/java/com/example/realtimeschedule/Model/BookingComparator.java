@@ -1,11 +1,22 @@
 package com.example.realtimeschedule.Model;
 
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 
 public class BookingComparator implements Comparator<Booking> {
 
     @Override
     public int compare(Booking booking, Booking t1) {
-        return booking.getPriority() - t1.getPriority();
+        if(booking.getPriority() != t1.getPriority()){
+            return booking.getPriority() - t1.getPriority();
+        }else{
+            // if same priority, compare based on time
+            return  booking.getParsedDate().compareTo(t1.getParsedDate());
+        }
+
     }
 }

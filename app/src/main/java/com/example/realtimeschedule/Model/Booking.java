@@ -1,5 +1,10 @@
 package com.example.realtimeschedule.Model;
 
+import androidx.annotation.NonNull;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +33,16 @@ public class Booking  {
     public void setDate(String date) {
         this.date = date;
     }
-
+    public Date getParsedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        Date d = null;
+        try {
+             d= sdf.parse(this.date);
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        return d;
+    }
     public boolean isServed() {
         return served;
     }
@@ -66,5 +80,15 @@ public class Booking  {
         params.put("date", date);
         params.put("served", served);
         return params;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{"+
+            "id"+":"+id+","+
+            "priority"+":"+priority+","+
+            "date"+":"+date+","+
+            "served"+":"+served+"}";
     }
 }

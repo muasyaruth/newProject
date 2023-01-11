@@ -1,31 +1,20 @@
 package com.example.realtimeschedule;
 
 
-import static com.google.firebase.storage.FirebaseStorage.getInstance;
+import android.app.ProgressDialog;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.example.realtimeschedule.Adapter.BookingsAdapter;
 import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.Model.BookingComparator;
-import com.example.realtimeschedule.Model.Scheduler;
 import com.example.realtimeschedule.Model.User;
-import com.example.realtimeschedule.ViewHolder.BookingsViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.common.data.DataBufferSafeParcelable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
@@ -48,6 +36,7 @@ public class BookingsActivity extends AppCompatActivity {
     ProgressDialog loader;
     ArrayList<User> users;
     PriorityQueue<Booking> bookings;
+    ArrayList<Booking> bookingsArr;
     BookingsAdapter adapter;
 
     @Override
@@ -61,6 +50,7 @@ public class BookingsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         loader = new ProgressDialog(this);
         users = new ArrayList<>();
+        bookingsArr = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             bookings = new PriorityQueue<>(new BookingComparator());
@@ -70,7 +60,7 @@ public class BookingsActivity extends AppCompatActivity {
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        adapter = new BookingsAdapter(this, bookings);
+        adapter = new BookingsAdapter(this, bookingsArr);
         recyclerView.setAdapter(adapter);
 
         loader.setMessage("Checking users information...");
@@ -81,8 +71,10 @@ public class BookingsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()){
                     Toast.makeText(BookingsActivity.this, "No Users in the system currently.", Toast.LENGTH_LONG).show();
+                    loader.dismiss();
                     return;
                 }
+                users.clear(); // required to empty arrayList as it will be populated again
                 // get all registered users
                 for(DataSnapshot userSnapshot: snapshot.getChildren()){
                     User user = userSnapshot.getValue(User.class);
@@ -95,65 +87,17 @@ public class BookingsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BookingsActivity.this, "Error getting users "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(BookingsActivity.this, "Error getting users. "+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
-
-//You need to parse date in dd-MM-yyyy pattern first and then format it to the pattern of your choice.
-//                List<String> str = Collections.singletonList(bookings.getDate());
-//                List<String> str = new ArrayList<>();
-//                str.add(bookings.getDate());
-//
-//                for(int j =0;j<str.size();j++){
-//                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-////                    List<LocalDateTime> dateTime = Collections.singletonList(LocalDateTime.parse(str.get(j), formatter));
-//
-//                    List<LocalDateTime> dateTime = new ArrayList<>();
-//                    dateTime.add(LocalDateTime.parse(str.get(j),formatter));
-//                    dateTime.forEach(n->{
-//                        long millis  = n.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//                        long timeNow = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//                        if (timeNow<millis){
-//                            System.out.println("schedule reminder");
-//
-//                            long sendNotification = millis- LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//
-//                            /*schedule reminder*/
-//                            Timer timer = new Timer();
-//                            TimerTask timerTask = new TimerTask() {
-//                                @Override
-//                                public void run() {
-//                                    System.out.println("Scheduling reminder------------------------:)");
-//                                    sendmail();
-//                                }
-//                            };
-//
-//                            try {
-//                                timer.schedule(timerTask, sendNotification);
-//                            }catch(IllegalArgumentException ex){
-//                                ex.printStackTrace();
-//                            }
-////                            sendmail();
-//                        }else {
-//                            System.out.println("time past");
-//                        }
-//                        System.out.println("======================date list===="+n.toString());//connect simu tuone
-//
-//
-//                    });
-//
-//                }
-
 
     /**
      * Get bookings. This should be after all users have been loaded
      */
     public void getBookings(){
         loader.setMessage("Getting users booking information...");
-        bookingsRef.addValueEventListener(new ValueEventListener() {
+        bookingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 loader.dismiss();
@@ -162,6 +106,7 @@ public class BookingsActivity extends AppCompatActivity {
                     Toast.makeText(BookingsActivity.this, "No booking information found. ", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                bookings.clear(); // remove any bookings data as it will be populated afresh
                 for(DataSnapshot ds: snapshot.getChildren()){
                     Booking booking = ds.getValue(Booking.class);
                     // associate it with a user
@@ -175,8 +120,8 @@ public class BookingsActivity extends AppCompatActivity {
                     bookings.add(booking);
                 }
 
-                // notify recycler adapter
-                adapter.notifyDataSetChanged();
+                // get items based on priority
+                sortBookings();
             }
 
             @Override
@@ -185,5 +130,19 @@ public class BookingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * Get bookings based on priority and render them in the recyclerview
+     */
+    public void sortBookings(){
+        bookingsArr.clear();
+        Booking booking;
+        while ((booking = bookings.poll()) != null){
+            bookingsArr.add(booking);
+        }
+
+        // notify recycler adapter
+        adapter.notifyDataSetChanged();
     }
 }

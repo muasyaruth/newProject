@@ -1,6 +1,7 @@
 package com.example.realtimeschedule.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +17,14 @@ import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHolder> {
     private Context context;
-    private PriorityQueue<Booking> bookings;
+    private ArrayList<Booking> bookings;
 
-    public BookingsAdapter(Context context, PriorityQueue<Booking> bookings) {
+    public BookingsAdapter(Context context, ArrayList<Booking> bookings) {
         this.context = context;
         this.bookings = bookings;
     }
@@ -36,7 +38,8 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull BookingsAdapter.ViewHolder holder, int position) {
-        Booking booking = bookings.poll();
+        Booking booking = bookings.get(position);
+        Log.d("Polled Booking", booking.toString()+" with user "+booking.getUser().toString());
         holder.bind(booking);
     }
 
