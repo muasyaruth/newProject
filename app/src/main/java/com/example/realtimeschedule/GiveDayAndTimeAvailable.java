@@ -162,7 +162,6 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
             slotsRef.child(String.valueOf(dayIndex)).setValue(availableTime.toMap()).addOnCompleteListener(task -> {
                 loader.dismiss();
                 Toast.makeText(GiveDayAndTimeAvailable.this, "Available time updated successfully", Toast.LENGTH_SHORT).show();
-                finish();
             });
 
         });
