@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,10 +25,11 @@ import java.util.PriorityQueue;
 public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHolder> {
     private Context context;
     private ArrayList<Booking> bookings;
-
+    protected DatabaseReference bookingsRef;
     public BookingsAdapter(Context context, ArrayList<Booking> bookings) {
         this.context = context;
         this.bookings = bookings;
+        bookingsRef = FirebaseDatabase.getInstance().getReference("Bookings");
     }
 
     @NonNull
@@ -62,14 +65,6 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
             designation=(TextView) itemView.findViewById(R.id.displayDesignation);
             btnServed= (Button) itemView.findViewById(R.id.btnServed);
             btnCancel= (Button) itemView.findViewById(R.id.btnCancel);
-
-            btnServed.setOnClickListener(view -> {
-                Toast.makeText(itemView.getContext(), "Booking serving implementation goes here", Toast.LENGTH_SHORT).show();
-            });
-            btnCancel.setOnClickListener(view -> {
-                Toast.makeText(itemView.getContext(), "Booking Cancel implementation logic goes here", Toast.LENGTH_SHORT).show();
-            });
-
         }
 
         public void bind(Booking booking){
@@ -78,11 +73,33 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
             appointmentDate.setText(booking.getDate());
             designation.setText(booking.getUser().getUserType());
             Picasso.get().load(booking.getUser().getImage()).into(imageView);
+
+            btnServed.setOnClickListener(view -> {
+                int index =  bookings.indexOf(booking);
+                bookings.remove(booking);
+                // update recyclerview
+                notifyItemRemoved(index);
+                // update database
+                updateServed(booking.getId());
+            });
+            btnCancel.setOnClickListener(view -> {
+                int index = bookings.indexOf(booking);
+                bookings.remove(booking);
+                // notify recyclerview
+                notifyItemRemoved(index);
+                // still update as served
+                updateServed(booking.getId());
+            });
         }
 
         @Override
         public void onClick(View view) {
             
+        }
+
+        private void updateServed(String bookingId){
+            bookingsRef.child(bookingId).child("served").setValue(true);
+            //
         }
     }
 }

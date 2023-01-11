@@ -109,6 +109,10 @@ public class BookingsActivity extends AppCompatActivity {
                 bookings.clear(); // remove any bookings data as it will be populated afresh
                 for(DataSnapshot ds: snapshot.getChildren()){
                     Booking booking = ds.getValue(Booking.class);
+
+                    // only consider bookings that are not served
+                    if(booking.isServed()) continue;
+
                     // associate it with a user
                     for (User user: users){
                         if(user.getUid().equals(booking.getId())){
