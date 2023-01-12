@@ -17,8 +17,8 @@ import javax.mail.internet.MimeMessage;
 public class EmailSender {
     private String sender = "ruthmuasya2000@gmail.com",
             receiver = "fstfITVC@gmail.com",
-            subject = "Special application",
-            message = "Hello Sir/Madam, Please check the special application that have been send to you",
+            subject = "Booking appointments",
+            message = "Hello Sir/Madam, Please Check appointments that have been sent to you",
             password = "grcwtaoqrvhgwyox";//
 
     public EmailSender setSender(String sender) {

@@ -3,6 +3,11 @@ package com.example.realtimeschedule.Model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Keeps track of the current available time a user can make a booking.
+ * Once a booking is made, the scheduler advances to the next stage.
+ * Once available slots in a day are completely booked, the scheduler advances to the following day
+ */
 public class Scheduler {
     private String current, end;
     int dayOfWeek = 0;
