@@ -46,6 +46,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     private ImageView profilePic;
     private Spinner spinner;
     private ArrayAdapter adapter;
+    ArrayList<String> userTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +68,15 @@ public class UserRegisterActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         spinner = findViewById(R.id.spUserTypes);
 
-        // initialize user types spinner
-        ArrayList<String> userTypes = new ArrayList<>();
+        // initialize user types spinner, sorted in order of increasing priority
+        userTypes = new ArrayList<>();
         userTypes.add("Student");
         userTypes.add("School President");
         userTypes.add("Lecturer");
         userTypes.add("COD");
         userTypes.add("Dean");
         userTypes.add("Registrar");
+
         adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, userTypes);
         spinner.setAdapter(adapter);
         // make first item selected by default
@@ -122,6 +124,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     user.setEmail(email);
                     user.setPhone(phone);
                     user.setImage(downloadImageUrl);
+                    user.setPriority(spinner.getSelectedItemPosition()+1); // make first priority '1' instead of '0'
                     user.setAdmin(false); // user not an admin
                     //save user
                     userRef.child(user.getUid()).setValue(user.toMap());
