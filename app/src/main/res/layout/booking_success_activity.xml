@@ -35,7 +35,20 @@
         android:layout_marginBottom="10dp"
         />
 
-  <Button
+    <TextView
+        android:id="@+id/tvBookingDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Booking Date: "
+        android:textColor="@color/green"
+        android:gravity="center_horizontal"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        />
+
+    <Button
           android:id="@+id/btnOk"
           android:layout_width="274dp"
           android:layout_height="67dp"
@@ -49,6 +62,18 @@
           android:gravity="center"
           android:layout_centerHorizontal="true"
           android:layout_below="@+id/imageView"/>
+
+    <TextView
+        android:id="@+id/tvBookingInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:text="View Booking Info >> "
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:textColor="@color/green"
+      />
 
   </LinearLayout>
     </RelativeLayout>

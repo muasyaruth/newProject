@@ -55,9 +55,10 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull UserViewHolder userViewHolder, int i, @NonNull User user) {
 
-                userViewHolder.User_Name.setText("Username : "+ user.getUsername());
+                userViewHolder.User_Name.setText("Username: "+ user.getUsername());
                 userViewHolder.Phones.setText("Phone: "+user.getPhone());
                 userViewHolder.email.setText("Email: "+ user.getEmail());
+                userViewHolder.userType.setText("Type: "+user.getUserType());
                 Picasso.get().load(user.getImage()).into(userViewHolder.userImage);
             }
 

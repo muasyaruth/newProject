@@ -31,7 +31,8 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
-
+        <!--Alarm Broadcast Receiver -->
+        <receiver android:name=".AlarmReceiver"/>
         <activity
             android:name=".MyBookingDetails"
             android:exported="false" />

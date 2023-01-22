@@ -12,6 +12,7 @@ import androidx.legacy.content.WakefulBroadcastReceiver;
 public class NotificationIntentService extends IntentService {
 
     private static final String ACTION_START = "ACTION_START";
+    private static final int NOTIFICATION_ID = 1;
 
     public NotificationIntentService() {
         super(NotificationIntentService.class.getSimpleName());
@@ -47,8 +48,9 @@ public class NotificationIntentService extends IntentService {
                 .setSmallIcon(R.drawable.clalendar)
                 .setContentText("7 days left till your appointment...")
                 .build();
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nBuilder.flags |=Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(1, nBuilder);
+        notificationManager.notify(NOTIFICATION_ID, nBuilder);
     }
 }

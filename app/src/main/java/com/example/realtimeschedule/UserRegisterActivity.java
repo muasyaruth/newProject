@@ -3,9 +3,12 @@ package com.example.realtimeschedule;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -46,6 +49,8 @@ public class UserRegisterActivity extends AppCompatActivity {
     private ImageView profilePic;
     private Spinner spinner;
     private ArrayAdapter adapter;
+    User user;
+    static SharedPreferences prefs;
     ArrayList<String> userTypes;
 
     @Override
@@ -67,6 +72,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         tvLogin = findViewById(R.id.tvLogin);
         progressBar = findViewById(R.id.progressbar);
         spinner = findViewById(R.id.spUserTypes);
+        prefs = getSharedPreferences("user_details", Context.MODE_PRIVATE);
 
         // initialize user types spinner, sorted in order of increasing priority
         userTypes = new ArrayList<>();
@@ -118,7 +124,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     }
 
                     // save created user to real time database
-                    User user = new User();
+                    user = new User();
                     user.setUid(mAuth.getCurrentUser().getUid());
                     user.setUsername(username);
                     user.setEmail(email);
@@ -128,6 +134,8 @@ public class UserRegisterActivity extends AppCompatActivity {
                     user.setAdmin(false); // user not an admin
                     //save user
                     userRef.child(user.getUid()).setValue(user.toMap());
+                    // save user info to shared preferences
+                    saveUser(user);
                     Toast.makeText(getApplicationContext(), "Account Created Successfully",Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
 
@@ -260,5 +268,20 @@ public class UserRegisterActivity extends AppCompatActivity {
             imageUri = data.getData();
             profilePic.setImageURI(imageUri);
         }
+    }
+
+    /**
+     * Save user details to shared preferences
+     * @param user Logged in user to save to shared preferences
+     */
+    private static void saveUser(User user){
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("uid", user.getUid());
+        editor.putString("username", user.getUsername());
+        editor.putString("email", user.getEmail());
+        editor.putString("image", user.getImage());
+        editor.putString("userType", user.getUserType());
+        editor.apply();
+        editor.commit();
     }
 }

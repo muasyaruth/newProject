@@ -2,11 +2,19 @@ package com.example.realtimeschedule;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +24,7 @@ import android.widget.Toast;
 import com.example.realtimeschedule.Interface.OnHelperCompleteListener;
 import com.example.realtimeschedule.Model.Booking;
 import com.example.realtimeschedule.Model.BookingHelper;
+import com.example.realtimeschedule.Model.EmailSender;
 import com.example.realtimeschedule.Model.Scheduler;
 import com.example.realtimeschedule.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,15 +38,18 @@ import com.squareup.picasso.Picasso;
 
 
 public class MainActivity extends AppCompatActivity {
-    Button bookBtn;
-    TextView name, email, phone;
+    Button bookBtn, btnViewBookings, btnLogout;
+    TextView name, email, phone, designation;
     ImageView imageView;
     FirebaseUser firebaseUser;
     DatabaseReference usersRef, bookingsRef, slotsRef;
-    User currentUser;
+    User user;
     Scheduler scheduler;
     ProgressDialog loader;
-
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+    SharedPreferences userPrefs, bookingPrefs;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,17 +60,37 @@ public class MainActivity extends AppCompatActivity {
         phone= findViewById(R.id.textViewPhone);
         imageView= findViewById(R.id.imageView2);
         bookBtn = findViewById(R.id.btnBook);
+        btnViewBookings = findViewById(R.id.btnViewBookings);
+        designation = findViewById(R.id.tvDesignation);
+        btnLogout = findViewById(R.id.btnLogout);
         loader = new ProgressDialog(this);
+        user = new User();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         bookingsRef = FirebaseDatabase.getInstance().getReference("Bookings");
         slotsRef = FirebaseDatabase.getInstance().getReference("Slots");
+        userPrefs = getSharedPreferences("user_details", Context.MODE_PRIVATE);
+        bookingPrefs = getSharedPreferences("booking_details", Context.MODE_PRIVATE);
 
         loader.setMessage("Getting your info...");
         loader.setCancelable(false);
         loader.show();
 
-         //Get current user info from firebase and render profile
+        // create a notification channel for reminders
+        createNotificationChannel();
+        // get user info from shared preferences if any
+        if (userPrefs.getString("uid", null) != null || userPrefs.getString("email", null) != null){
+            user.setUid(userPrefs.getString("uid", null));
+            user.setUsername(userPrefs.getString("username", "Username"));
+            user.setEmail(userPrefs.getString("email", null));
+            user.setImage(userPrefs.getString("image", null));
+            user.setPhone(userPrefs.getString("phone", null));
+            user.setPriority(userPrefs.getInt("priority", 1));
+            // render data to views
+            initViews();
+        }
+
+        //Get current user info from firebase and render profile
         usersRef.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -68,7 +100,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                currentUser = snapshot.getValue(User.class);
+                user = snapshot.getValue(User.class);
+                // save user to shared preferences
+                assert user != null;
+                saveUser(user);
                 initViews();
             }
 
@@ -77,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
         // make a booking
         bookBtn.setOnClickListener(view-> {
             // get next available time for booking
@@ -87,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
             slotsRef.child("scheduler").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    loader.dismiss();
                     if(!snapshot.exists()){
+                        if (loader.isShowing()) loader.dismiss();
                         // no data found
                         Toast.makeText(MainActivity.this, "Admin is currently accepting no more applications or is not available.", Toast.LENGTH_LONG).show();
                         return;
@@ -97,14 +131,11 @@ public class MainActivity extends AppCompatActivity {
                     scheduler = snapshot.getValue(Scheduler.class);
                     // make new Booking
                     Booking booking = new Booking();
-                    booking.setId(currentUser.getUid());
-                    booking.setPriority(currentUser.getPriority());
+                    booking.setId(user.getUid());
+                    booking.setPriority(user.getPriority());
                     booking.setDate(scheduler.getBookedUntil());
 
-                    /**
-                     *  Here we need to implement logic for re-ordering time based on priority
-                     *  of the user.
-                     */
+                    //Here we need to implement logic for re-ordering time based on priority of the user.
                     BookingHelper bHelper = new BookingHelper(MainActivity.this);
                     bHelper.setScheduler(scheduler) // for updating scheduling time
                             .book(booking) // booking over network request
@@ -117,6 +148,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
+        // view bookings
+        btnViewBookings.setOnClickListener(view -> {
+            // check if user has any booking information
+            String bookingId = bookingPrefs.getString("id", null);
+            String bookingDate = bookingPrefs.getString("date", null);
+            if (bookingId == null || bookingDate == null){
+                Toast.makeText(this, "You have not made any bookings. ", Toast.LENGTH_LONG).show();
+                return;
+            }
+            // user has bookings
+            startActivity(new Intent(MainActivity.this, BookingDetails.class));
+        });
+        // logout
+        btnLogout.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            // clear user data from shared preferences
+            userPrefs.edit().clear().apply();
+            bookingPrefs.edit().clear().apply();
+            startActivity(new Intent(MainActivity.this, StartActivity.class));
+        });
     }
 
     /**
@@ -126,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSuccess(String message) {
             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-            // Booking success. Show booking success activity
-            startActivity(new Intent(MainActivity.this, BookingSuccessActivity.class));
+            // Do activities after a booking e.g. sending success email to user, setting reminders etc.
+            postBookingActions();
         }
 
         @Override
@@ -138,9 +189,122 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initViews(){
-        name.setText(currentUser.getUsername());
-        email.setText(currentUser.getEmail());
-        phone.setText(currentUser.getPhone());
-        Picasso.get().load(currentUser.getImage()).into(imageView);
+        name.setText(user.getUsername());
+        email.setText(user.getEmail());
+        phone.setText(user.getPhone());
+        designation.setText(user.getUserType());
+        Picasso.get().load(user.getImage()).into(imageView);
+    }
+
+    /**
+     * Create a notification channel
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void createNotificationChannel(){
+        String name = "RealTimeScheduleReminders";
+        String description = "Reminder Channel for schedules in RealTimeSchedule app";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("schedule_reminder", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    /**
+     * Create an alarm reminder for the scheduled time
+     */
+    private void setReminder(){
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        // set alarm
+        long triggerTime = System.currentTimeMillis()+2000; // set alarm to be triggered after 2 seconds
+        long reminderInterval = 2*60*1000; // reminder after every 2 minutes
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerTime, reminderInterval, pendingIntent);
+        // use the cancel() method to stop alarmManager from firing.
+        Toast.makeText(this, "Reminder set successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Cancel alarm to prevent reminders from firing indefinitely
+     */
+    private void cancelReminders(){
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this,0, intent, 0);
+
+        if (alarmManager == null){
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        }
+
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(this, "Reminder cleared successfully.", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Actions done after a user has made a booking e.g. sending booking success email
+     *
+     */
+    private void postBookingActions(){
+        bookingsRef.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // hide loader if showing
+                if (loader.isShowing()) loader.dismiss();
+
+                Booking booking = snapshot.getValue(Booking.class);
+                // save booking info to shared preferences
+                assert booking != null;
+                saveBooking(booking);
+                // set reminder
+                setReminder();
+
+                // send email to user
+                EmailSender emailSender = new EmailSender();
+                emailSender.setReceiver(user.getEmail())
+                        .setSubject("RealTimeSchedule: Booking Success!")
+                        .setMessage("Hello "+user.getUsername()+". You booking was successful and has been scheduled on "+booking.getDate()+"\n " +
+                                "Thank you for making bookings with RealTimeSchedule. "+"\n" +
+                                "Best Regards.")
+                        .send();
+
+                // you can forward email to vc too
+
+                // Booking success. Show booking success activity
+                Intent intent = new Intent(MainActivity.this, BookingSuccessActivity.class);
+                intent.putExtra("bookingDate", booking.getDate());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    /**
+     * Save user info to shared preferences
+     */
+    public void saveUser(User user){
+        SharedPreferences.Editor editor = userPrefs.edit();
+        editor.putString("uid", user.getUid());
+        editor.putString("username", user.getUsername());
+        editor.putString("email", user.getEmail());
+        editor.putString("image", user.getImage());
+        editor.putString("userType", user.getUserType());
+        editor.apply();
+    }
+    /**
+     * Save booking info to shared preferences
+     */
+    public void saveBooking(Booking booking){
+        SharedPreferences.Editor editor = bookingPrefs.edit();
+        editor.putString("id", booking.getId());
+        editor.putString("date", booking.getDate());
+        editor.putInt("priority", booking.getPriority());
+        editor.apply();
     }
 }

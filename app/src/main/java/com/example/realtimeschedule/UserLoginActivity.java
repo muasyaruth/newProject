@@ -3,8 +3,10 @@ package com.example.realtimeschedule;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -30,7 +32,7 @@ public class UserLoginActivity extends Activity {
     private TextView tvRegister, tvResetPassword;
     private FirebaseAuth firebaseAuth;
     Button btnLogin;
-
+    SharedPreferences prefs;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,16 @@ public class UserLoginActivity extends Activity {
         tvResetPassword=findViewById(R.id.resetPassword);
         firebaseAuth = FirebaseAuth.getInstance();
         tvRegister = findViewById(R.id.register);
+        prefs = getSharedPreferences("user_details", Context.MODE_PRIVATE);
 
+        // check  if user info is saved in shared preferences
+        if (prefs.getString("uid", null) != null && prefs.getString("email", null) != null){
+            progressBar.setVisibility(View.GONE);
+            Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
 
         tvRegister.setOnClickListener(view -> {
             Intent intent=new Intent(UserLoginActivity.this, UserRegisterActivity.class);
@@ -86,32 +97,29 @@ public class UserLoginActivity extends Activity {
             passwordDialog.create().show();
         });
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String  tex_email = email.getText().toString().trim();
-                String tex_password = password.getText().toString().trim();
+        btnLogin.setOnClickListener(view -> {
+            String  tex_email = email.getText().toString().trim();
+            String tex_password = password.getText().toString().trim();
 
-                if (tex_email.isEmpty()) {
-                    email.setError("Email is required");
-                    email.requestFocus();
-                    return;
-                }
-                if (tex_password.isEmpty()) {
-                    password.setError("Password is required");
-                    password.requestFocus();
-                    return;
-                }
-
-                if (tex_password.length() < 6) {
-                    password.setError("Password must be more than 6 characters");
-                    password.requestFocus();
-                    return;
-                }  else {
-                    login(tex_email,tex_password);
-                }
-
+            if (tex_email.isEmpty()) {
+                email.setError("Email is required");
+                email.requestFocus();
+                return;
             }
+            if (tex_password.isEmpty()) {
+                password.setError("Password is required");
+                password.requestFocus();
+                return;
+            }
+
+            if (tex_password.length() < 6) {
+                password.setError("Password must be more than 6 characters");
+                password.requestFocus();
+                return;
+            }  else {
+                login(tex_email,tex_password);
+            }
+
         });
 
     }
@@ -123,19 +131,23 @@ public class UserLoginActivity extends Activity {
 
     private void login(String tex_email, String tex_password) {
         progressBar.setVisibility(View.VISIBLE);
-        firebaseAuth.signInWithEmailAndPassword(tex_email,tex_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(UserLoginActivity.this, "Unable to log in. "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                }
+        firebaseAuth.signInWithEmailAndPassword(tex_email,tex_password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                progressBar.setVisibility(View.GONE);
+                // save user information to firebase
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("uid", firebaseAuth.getUid());
+                editor.putString("email", firebaseAuth.getCurrentUser().getEmail());
+                editor.apply();
+                editor.commit();
+
+                Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(UserLoginActivity.this, "Unable to log in. "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

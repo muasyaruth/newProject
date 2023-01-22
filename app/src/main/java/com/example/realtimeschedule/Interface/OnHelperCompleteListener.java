@@ -1,5 +1,7 @@
 package com.example.realtimeschedule.Interface;
 
+import java.util.Map;
+
 /**
  * Invoked when booking helper hs finished executing
  */

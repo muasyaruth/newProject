@@ -15,16 +15,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailSender {
-    private String sender = "ruthmuasya2000@gmail.com",
-            receiver = "fstfITVC@gmail.com",
+    private String sender = "ruthmuasya2000@gmail.com", receiver,
             subject = "Booking appointments",
             message = "Hello Sir/Madam, Please Check appointments that have been sent to you",
             password = "grcwtaoqrvhgwyox";//
 
-    public EmailSender setSender(String sender) {
-        this.sender = sender;
-        return this;
-    }
 
     public EmailSender setReceiver(String receiver) {
         this.receiver = receiver;

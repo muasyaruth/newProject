@@ -1,12 +1,20 @@
 package com.example.realtimeschedule.Model;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import com.example.realtimeschedule.BookingDetails;
 import com.example.realtimeschedule.Interface.OnHelperCompleteListener;
+import com.example.realtimeschedule.MainActivity;
+import com.example.realtimeschedule.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 public class BookingHelper {
@@ -27,10 +36,13 @@ public class BookingHelper {
     DatabaseReference bookingsRef, slotsRef;
     private Scheduler scheduler;
     private PriorityQueue<Booking> bookings;
+    SharedPreferences userPrefs,bookingPrefs;
     public BookingHelper(Context context){
         this.context = context;
         bookingsRef = FirebaseDatabase.getInstance().getReference("Bookings");
         slotsRef = FirebaseDatabase.getInstance().getReference("Slots");
+        bookingPrefs = context.getSharedPreferences("booking_details", Context.MODE_PRIVATE);
+        userPrefs = context.getSharedPreferences("user_details", Context.MODE_PRIVATE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             bookings = new PriorityQueue<>(new BookingComparator());
         }
@@ -54,8 +66,10 @@ public class BookingHelper {
                     // re-schedule bookings while updating scheduler
                     reScheduleBookings();
                     // booking successful. Move to booking success activity
-                    if (listener != null ) listener.onSuccess("Booking success");
-//
+                    if (listener != null ) {
+                        listener.onSuccess("Booking success");
+                    }
+
                 });
 
         // error parsing next available time
@@ -117,12 +131,11 @@ public class BookingHelper {
     /**
      * Single listener when getting bookings
      */
-    public ValueEventListener bookingsListener = new ValueEventListener() {
+    private ValueEventListener bookingsListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             // add all bookings to a priority queue
             bookings.clear();
-            listener.onError("Got new Booking info. Processing...");
             for (DataSnapshot ds: snapshot.getChildren()){
                 Booking booking = ds.getValue(Booking.class);
                 if(booking.isServed()) continue; // consider only bookings that are not served
@@ -142,6 +155,9 @@ public class BookingHelper {
                     bookingsMap.put(booking.getId(), booking);
                     // synchronize with offline scheduler
                     synchronizeScheduler();
+
+                    // notify user if there is a change in schedule
+                    notifyUser(booking);
                 } catch (ParseException e) {
                     listener.onError("Error parsing booking time");
                 }
@@ -168,5 +184,55 @@ public class BookingHelper {
         // next client to be served after 30 minutes
         calendar.add(Calendar.MINUTE, 30);
         return sdf.format(calendar.getTime());
+    }
+
+    /**
+     * Send a notification to user about changes in schedule
+     */
+    public void notifyUser(Booking booking){
+        String bookingId = bookingPrefs.getString("id", null);
+        if (bookingId == null) return;
+        // only process 'this' user's booking
+        if (!bookingId.equals(booking.getId())) return;
+        // get booking time saved in shared preferences
+        String bookingDate = bookingPrefs.getString("date", null);
+        String userEmail = userPrefs.getString("email", null);
+        String username = userPrefs.getString("username", "User");
+        // only notify users when booking date has changed. Not every time
+        if (bookingDate.equals(booking.getDate())) return;
+
+        // notify via email
+        EmailSender emailSender = new EmailSender();
+        emailSender.setReceiver(userEmail)
+                .setSubject("RealTimeSchedule: Change in Appointment Schedule")
+                .setMessage("Hello "+username+", there has been change in appointment schedule from "+bookingDate+" to "+booking.getDate()+".\n"+
+                        "Apologies for any inconvenience caused. \n"+
+                        "Sincerely, RealTimeSchedule.")
+                .send();
+
+        // Show a notification on the same
+        // Open a new activity when user clicks on this notification
+        Intent i = new Intent(context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // make a pending intent to wrap this intent and send it to the broadcast receiver
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, 0);
+
+        // make a notification builder
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "schedule_reminder")
+                .setContentTitle("Appointment Schedule Change!")
+                .setTicker("Don't miss! ")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.clalendar)
+                .setContentText("Please check on changes in your appointment schedule");
+        // show notification
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(1,notificationBuilder.build());
+
+        // update booking date
+        SharedPreferences.Editor editor = bookingPrefs.edit();
+        editor.putString("date", booking.getDate());
+        editor.commit();
+        editor.apply();
     }
 }

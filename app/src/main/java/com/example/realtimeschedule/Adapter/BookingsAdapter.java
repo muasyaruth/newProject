@@ -58,13 +58,13 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             // initialize layout
-            imageView = (ImageView) itemView.findViewById(R.id.officer_image);
-            clientName = (TextView) itemView.findViewById(R.id.clientName);
-            clientEmail=(TextView) itemView.findViewById(R.id.clientEmail);
-            appointmentDate=(TextView) itemView.findViewById(R.id.BookingDate);
-            designation=(TextView) itemView.findViewById(R.id.displayDesignation);
-            btnServed= (Button) itemView.findViewById(R.id.btnServed);
-            btnCancel= (Button) itemView.findViewById(R.id.btnCancel);
+            imageView = itemView.findViewById(R.id.officer_image);
+            clientName = itemView.findViewById(R.id.clientName);
+            clientEmail= itemView.findViewById(R.id.clientEmail);
+            appointmentDate= itemView.findViewById(R.id.BookingDate);
+            designation= itemView.findViewById(R.id.displayDesignation);
+            btnServed= itemView.findViewById(R.id.btnServed);
+            btnCancel= itemView.findViewById(R.id.btnCancel);
         }
 
         public void bind(Booking booking){
