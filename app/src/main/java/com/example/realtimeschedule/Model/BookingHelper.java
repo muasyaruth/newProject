@@ -1,26 +1,24 @@
 package com.example.realtimeschedule.Model;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.CalendarContract;
-import android.util.Log;
+import android.os.Build;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.realtimeschedule.BookingSuccessActivity;
 import com.example.realtimeschedule.Interface.OnHelperCompleteListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import io.reactivex.rxjava3.internal.schedulers.ScheduledRunnable;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 
 public class BookingHelper {
     private Booking booking;
@@ -28,14 +26,22 @@ public class BookingHelper {
     OnHelperCompleteListener listener;
     DatabaseReference bookingsRef, slotsRef;
     private Scheduler scheduler;
+    private PriorityQueue<Booking> bookings;
     public BookingHelper(Context context){
         this.context = context;
         bookingsRef = FirebaseDatabase.getInstance().getReference("Bookings");
         slotsRef = FirebaseDatabase.getInstance().getReference("Slots");
-        scheduler = new Scheduler();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            bookings = new PriorityQueue<>(new BookingComparator());
+        }
     }
 
     public BookingHelper book(Booking booking){
+        // validate all required params
+        if (scheduler == null){
+            throw new RuntimeException("Scheduler must be specified in order to make a booking!");
+        }
+
     try {
         // update to firebase
         bookingsRef.child(booking.getId()).setValue(booking.toMap())
@@ -45,8 +51,8 @@ public class BookingHelper {
                         if (listener != null) listener.onError("Unable to reserve your booking. Please try again");
                         return;
                     }
-                    // update scheduler
-                    updateScheduler();
+                    // re-schedule bookings while updating scheduler
+                    reScheduleBookings();
                     // booking successful. Move to booking success activity
                     if (listener != null ) listener.onSuccess("Booking success");
 //
@@ -69,12 +75,17 @@ public class BookingHelper {
         return this;
     }
 
+
+
     /**
-     * Update scheduler information for subsequent bookings
+     * Synchronize scheduler to make sure time updated as required
+     * and the scheduler skips to the next day once current day's time
+     * is over
      */
-    private void updateScheduler() {
+    private void synchronizeScheduler(){
         // check if there is any time available this day
-        if(scheduler.getCurrent().equals(scheduler.getEnd())){
+        if(scheduler.getBookedUntil().equals(scheduler.getEnd())){
+            listener.onError("Day Fully Booked");
             // update scheduler to use the following day
             // check also if the week has ended and start a fresh week
             if(scheduler.getDayOfWeek() >= 5){
@@ -85,21 +96,7 @@ public class BookingHelper {
                 scheduler.setDayOfWeek(scheduler.getDayOfWeek()+1);
             }
         }
-        // update the scheduler's time for the next client
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
-            Calendar calendar = Calendar.getInstance();
-            Date currentDate = sdf.parse(scheduler.getCurrent());
-            calendar.setTime(currentDate);
-            // next client to be served after 30 minutes
-            calendar.add(Calendar.MINUTE, 30);
-
-            scheduler.setCurrent(sdf.format(calendar.getTime()));
-            Log.d("Scheduler", scheduler.toMap().toString());
-            slotsRef.child("scheduler").setValue(scheduler.toMap());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        listener.onError("Day not fully booked: "+scheduler.getBookedUntil()+" vs "+scheduler.getEnd());
     }
 
     /**
@@ -107,5 +104,69 @@ public class BookingHelper {
      */
     public void setOnCompleteListener(OnHelperCompleteListener listener){
         this.listener = listener;
+    }
+
+    /**
+     * Get all bookings and re-schedule them based on priority, updating time for each
+     */
+    public void reScheduleBookings(){
+        // get all bookings from database
+        bookingsRef.addListenerForSingleValueEvent(bookingsListener);
+    }
+
+    /**
+     * Single listener when getting bookings
+     */
+    public ValueEventListener bookingsListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            // add all bookings to a priority queue
+            bookings.clear();
+            listener.onError("Got new Booking info. Processing...");
+            for (DataSnapshot ds: snapshot.getChildren()){
+                Booking booking = ds.getValue(Booking.class);
+                if(booking.isServed()) continue; // consider only bookings that are not served
+                bookings.add(booking);
+            }
+            // Do not re-schedule user being served currently.
+            Booking currentServing = bookings.poll();
+            // reset scheduler pointer
+            scheduler.setBookedUntil(currentServing.getDate());
+
+            HashMap<String, Object> bookingsMap = new HashMap<>();
+            Booking booking;
+            while ((booking = bookings.poll()) != null){
+                try {
+                    booking.setDate(getNextTime());
+                    scheduler.setBookedUntil(getNextTime());
+                    bookingsMap.put(booking.getId(), booking);
+                    // synchronize with offline scheduler
+                    synchronizeScheduler();
+                } catch (ParseException e) {
+                    listener.onError("Error parsing booking time");
+                }
+            }
+
+            // update bookings to firebase
+            bookingsRef.updateChildren(bookingsMap);
+            // update scheduler
+            slotsRef.child("scheduler").setValue(scheduler.toMap());
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            if (listener != null) listener.onError("Error getting booking information "+error.getMessage());
+        }
+    };
+
+    // get next time the scheduler will
+    private String getNextTime() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm aa");
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = sdf.parse(scheduler.getBookedUntil());
+        calendar.setTime(currentDate);
+        // next client to be served after 30 minutes
+        calendar.add(Calendar.MINUTE, 30);
+        return sdf.format(calendar.getTime());
     }
 }

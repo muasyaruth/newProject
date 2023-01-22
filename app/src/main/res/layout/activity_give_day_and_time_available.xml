@@ -31,12 +31,21 @@
                 android:layout_marginBottom="20dp"
                 android:background="#c0c0c0" />
 
-            <TextView
+            <Button
+                android:id="@+id/btnSelectDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You will be available"
+                android:text="Select Date"
                 android:textSize="18sp"
+                android:textAllCaps="false"
+                android:backgroundTint="#3A6A91"
                 android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="No date selected"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

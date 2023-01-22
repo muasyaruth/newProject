@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     Booking booking = new Booking();
                     booking.setId(currentUser.getUid());
                     booking.setPriority(currentUser.getPriority());
-                    booking.setDate(scheduler.getCurrent());
+                    booking.setDate(scheduler.getBookedUntil());
 
                     /**
                      *  Here we need to implement logic for re-ordering time based on priority

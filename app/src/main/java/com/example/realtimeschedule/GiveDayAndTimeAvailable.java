@@ -3,31 +3,32 @@ package com.example.realtimeschedule;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.realtimeschedule.Model.AvailableTime;
 import com.example.realtimeschedule.Model.Scheduler;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class GiveDayAndTimeAvailable extends AppCompatActivity {
 
-    TextView timer1, timer2, tvHeader;
-    Button btn;
+    TextView timer1, timer2, tvHeader, tvDate;
+    Button btn, btnSelectDate;
 
     int t1Hr, t1Min, t2Hr, t2Min;
     private DatabaseReference slotsRef;
@@ -37,7 +38,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
     private AvailableTime availableTime;
     ProgressDialog loader;
     private boolean schedulerInitialized = false;
-    String day;
+    String day, date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +50,11 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
         timer2 = findViewById(R.id.timer2);
         tvHeader = findViewById(R.id.tvHeader);
         btn = findViewById(R.id.monday);
-        loader = new ProgressDialog(this);
+        btnSelectDate = findViewById(R.id.btnSelectDate);
+        tvDate = findViewById(R.id.tvDate);
 
-        from=to = "";
+        loader = new ProgressDialog(this);
+        date=from=to = "";
 
         // get the day index of week selected
         dayIndex = getIntent().getIntExtra("dayIndex", 0);
@@ -72,8 +75,11 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                     return;
                 }
                 availableTime = snapshot.getValue(AvailableTime.class);
+                String onlineDate = availableTime.getDate();
+                date = onlineDate == null ? "" : onlineDate;
                 from = availableTime.getFrom();
                 to = availableTime.getTo();
+                if (date.isEmpty()) tvDate.setText(date);
                 timer1.setText(from);
                 timer2.setText(to);
             }
@@ -98,6 +104,24 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+        });
+
+        // get date
+        btnSelectDate.setOnClickListener(view -> {
+            // get current date
+            final Calendar c = Calendar.getInstance();
+            int mYear, mMonth, mDay;
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH+1);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(GiveDayAndTimeAvailable.this, (datePicker, year, month, dayOfMonth) -> {
+                date = (dayOfMonth<10? "0" : "")+dayOfMonth+"/"+(month+1<10 ? "0": "")+(month+1)+"/"+year;
+                tvDate.setText(date);
+            }, mYear, mMonth, mDay);
+            // show dialog
+
+            datePickerDialog.show();
         });
 
         // get from time
@@ -141,20 +165,21 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
             loader.setMessage("Setting time...");
             loader.show();
             // validate correct time selected
-            if(from.isEmpty() || to.isEmpty()){
+            if(date.isEmpty() || from.isEmpty() || to.isEmpty()){
+                loader.dismiss();
                 Toast.makeText(getApplicationContext(), "Please select valid Time Slot", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // proceed
             AvailableTime availableTime = new AvailableTime();
+            availableTime.setDate(date);
             availableTime.setFrom(from);
             availableTime.setTo(to);
             // first initialize scheduler if it had no been initialized
             if(!schedulerInitialized){
                 Scheduler scheduler = new Scheduler();
-                scheduler.setCurrent(availableTime.getFrom());
-                scheduler.setEnd(availableTime.getTo());
+                scheduler.setBookedUntil(availableTime.getDate()+" "+availableTime.getFrom());
+                scheduler.setEnd(availableTime.getDate()+" "+availableTime.getTo());
                 scheduler.setDayOfWeek(dayIndex);
                 slotsRef.child("scheduler").setValue(scheduler.toMap());
             }
