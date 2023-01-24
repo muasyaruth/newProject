@@ -59,7 +59,7 @@
           android:textAllCaps="false"
           android:textColor="@android:color/white"
           android:textSize="40sp"
-          android:gravity="center"
+          android:gravity="center_vertical|center_horizontal"
           android:layout_centerHorizontal="true"
           android:layout_below="@+id/imageView"/>
 

@@ -32,15 +32,7 @@ public class UsersActivity extends AppCompatActivity {
         layoutManager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(UsersActivity.this, MainActivity.class);
-
-        startActivity(intent);
-    }
-
+    
     @Override
     protected void onStart() {
         super.onStart();

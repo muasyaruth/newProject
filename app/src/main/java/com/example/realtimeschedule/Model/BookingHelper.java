@@ -99,18 +99,17 @@ public class BookingHelper {
     private void synchronizeScheduler(){
         // check if there is any time available this day
         if(scheduler.getBookedUntil().equals(scheduler.getEnd())){
-            listener.onError("Day Fully Booked");
             // update scheduler to use the following day
             // check also if the week has ended and start a fresh week
             if(scheduler.getDayOfWeek() >= 5){
                 // Office is closed on weekends. Start a new week
                 scheduler.setDayOfWeek(0);
+                // set booked until to match the following day
             }else{
                 // not a weekend. Update the next day
                 scheduler.setDayOfWeek(scheduler.getDayOfWeek()+1);
             }
         }
-        listener.onError("Day not fully booked: "+scheduler.getBookedUntil()+" vs "+scheduler.getEnd());
     }
 
     /**

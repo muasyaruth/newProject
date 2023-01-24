@@ -9,9 +9,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-//import com.example.realtimeschedule.ViewHolder.Day_TimeViewHolder;
-
-
 public class BookingSuccessActivity extends AppCompatActivity  {
     Button okBtn;
     TextView tvBookingInfo, tvBookingDate;
