@@ -72,19 +72,19 @@ public class MainActivity extends AppCompatActivity {
         userPrefs = getSharedPreferences("user_details", Context.MODE_PRIVATE);
         bookingPrefs = getSharedPreferences("booking_details", Context.MODE_PRIVATE);
 
-        loader.setMessage("Getting your info...");
-        loader.setCancelable(false);
-        loader.show();
+//        loader.setMessage("Getting your info...");
+//        loader.setCancelable(false);
+//        loader.show();
 
         // create a notification channel for reminders
         createNotificationChannel();
         // get user info from shared preferences if any
         if (userPrefs.getString("uid", null) != null || userPrefs.getString("email", null) != null){
             user.setUid(userPrefs.getString("uid", null));
-            user.setUsername(userPrefs.getString("username", "Username"));
-            user.setEmail(userPrefs.getString("email", null));
-            user.setImage(userPrefs.getString("image", null));
-            user.setPhone(userPrefs.getString("phone", null));
+            user.setUsername(userPrefs.getString("username", ""));
+            user.setEmail(userPrefs.getString("email", ""));
+            user.setImage(userPrefs.getString("image", ""));
+            user.setPhone(userPrefs.getString("phone", ""));
             user.setPriority(userPrefs.getInt("priority", 1));
             // render data to views
             initViews();
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         usersRef.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                loader.dismiss();
+                if (loader.isShowing()) loader.dismiss();
                 if(!snapshot.exists()){
                     // user not found in users collection
                     Toast.makeText(MainActivity.this, "User not found", Toast.LENGTH_SHORT).show();

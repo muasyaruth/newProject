@@ -10,6 +10,8 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.bumptech.glide.Priority;
+
 public class AlarmReceiver extends BroadcastReceiver {
     private static int REMINDER_NOTIFICATION_ID = 1;
     @Override
@@ -25,7 +27,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                     .setContentTitle("Appointment Reminder!")
                     .setTicker("Don't miss! ")
                     .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_SOUND) // use default notification sound
                     .setSmallIcon(R.drawable.clalendar)
                     .setContentText("Check your pending appointment");
             // show notification

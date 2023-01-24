@@ -19,11 +19,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.example.realtimeschedule.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class UserLoginActivity extends Activity {
@@ -31,8 +37,9 @@ public class UserLoginActivity extends Activity {
     private ProgressBar progressBar;
     private TextView tvRegister, tvResetPassword;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference usersRef;
     Button btnLogin;
-    SharedPreferences prefs;
+    static SharedPreferences prefs;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,7 @@ public class UserLoginActivity extends Activity {
         tvResetPassword=findViewById(R.id.resetPassword);
         firebaseAuth = FirebaseAuth.getInstance();
         tvRegister = findViewById(R.id.register);
+        usersRef = FirebaseDatabase.getInstance().getReference("Users");
         prefs = getSharedPreferences("user_details", Context.MODE_PRIVATE);
 
         // check  if user info is saved in shared preferences
@@ -134,21 +142,46 @@ public class UserLoginActivity extends Activity {
         firebaseAuth.signInWithEmailAndPassword(tex_email,tex_password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 progressBar.setVisibility(View.GONE);
-                // save user information to firebase
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("uid", firebaseAuth.getUid());
-                editor.putString("email", firebaseAuth.getCurrentUser().getEmail());
-                editor.apply();
-                editor.commit();
+                // get user information from firebase
+                usersRef.child(firebaseAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            return;
+                        }
 
-                Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                        User user = snapshot.getValue(User.class);
+                        // save user info to shared preferences
+                        saveUser(user);
+
+                        Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(UserLoginActivity.this, "Error getting user information "+error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             } else {
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(UserLoginActivity.this, "Unable to log in. "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /**
+     * Save user details to shared preferences
+     * @param user Logged in user to save to shared preferences
+     */
+    private static void saveUser(User user){
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("uid", user.getUid());
+        editor.putString("username", user.getUsername());
+        editor.putString("email", user.getEmail());
+        editor.putString("image", user.getImage());
+        editor.putString("userType", user.getUserType());
+        editor.apply();
     }
 }

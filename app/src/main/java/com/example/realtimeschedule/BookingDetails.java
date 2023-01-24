@@ -71,9 +71,9 @@ public class BookingDetails extends AppCompatActivity {
     public void updateUI(){
         try {
             Picasso.get().load(user.getImage()).into(image);
-            name.setText(user.getUsername());
-            email.setText(user.getEmail());
-            date.setText(booking.getDate());
+            name.setText("Username: "+user.getUsername());
+            email.setText("Email: "+user.getEmail());
+            date.setText("Booking Date: "+booking.getDate());
         }catch (Exception exception){
             exception.printStackTrace();
         }

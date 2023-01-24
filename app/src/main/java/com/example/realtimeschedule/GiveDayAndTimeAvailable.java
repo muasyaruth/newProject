@@ -79,7 +79,7 @@ public class GiveDayAndTimeAvailable extends AppCompatActivity {
                 date = onlineDate == null ? "" : onlineDate;
                 from = availableTime.getFrom();
                 to = availableTime.getTo();
-                if (date.isEmpty()) tvDate.setText(date);
+                if (!date.isEmpty()) tvDate.setText(date);
                 timer1.setText(from);
                 timer2.setText(to);
             }
