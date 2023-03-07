@@ -32,33 +32,25 @@ public class UsersActivity extends AppCompatActivity {
         layoutManager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(UsersActivity.this, MainActivity.class);
-
-        startActivity(intent);
-    }
-
+    
     @Override
     protected void onStart() {
         super.onStart();
 
-        final DatabaseReference usersref = FirebaseDatabase.getInstance().getReference().child("Users");
+        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         FirebaseRecyclerOptions<User> options = new FirebaseRecyclerOptions.Builder<User>()
-                .setQuery(usersref, User.class)
+                .setQuery(usersRef, User.class)
                 .build();
 
         FirebaseRecyclerAdapter<User, UserViewHolder> adapter = new FirebaseRecyclerAdapter<User, UserViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull UserViewHolder userViewHolder, int i, @NonNull User user) {
 
-                userViewHolder.User_Name.setText("User Name: "+ user.getName());
+                userViewHolder.User_Name.setText("Username: "+ user.getUsername());
                 userViewHolder.Phones.setText("Phone: "+user.getPhone());
                 userViewHolder.email.setText("Email: "+ user.getEmail());
-                userViewHolder.User_Id.setText("User ID: "+ user.getUid());
+                userViewHolder.userType.setText("Type: "+user.getUserType());
                 Picasso.get().load(user.getImage()).into(userViewHolder.userImage);
             }
 

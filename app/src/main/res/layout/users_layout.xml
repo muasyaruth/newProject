@@ -52,15 +52,14 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/userId"
+            android:id="@+id/userType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/Phone"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="User ID"
+            android:text="User Type"
             android:textColor="@color/black"
-
             android:textSize="14dp"
             android:textStyle="bold" />
 
@@ -69,45 +68,6 @@
             android:layout_height="80dp"
             android:layout_centerVertical="true"
             android:id="@+id/userImageView"/>
-
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/cart_product_price"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginLeft="5dp"-->
-        <!--            android:text="Product Price"-->
-        <!--            android:textColor="@color/colorPrimaryDark"-->
-        <!--            android:textSize="14dp"-->
-        <!--            android:textStyle="bold"-->
-        <!--            android:layout_below="@+id/cart_product_quantity"-->
-        <!--            android:gravity="center"-->
-        <!--            android:layout_marginTop="10dp"-->
-        <!--            />-->
-
-
-        <!--        <ImageView-->
-        <!--            android:layout_below="@id/Email"-->
-        <!--            android:id="@+id/label_delete"-->
-        <!--            android:layout_width="20dp"-->
-        <!--            android:iconTint="@color/colorWhite"-->
-        <!--            android:layout_height="20dp"-->
-        <!--            android:layout_marginLeft="5dp"-->
-        <!--            android:layout_marginTop="10dp"-->
-        <!--            android:src="@drawable/ic_baseline_delete"-->
-        <!--            android:layout_alignParentEnd="true"/>-->
-
-        <!--        <Button-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_alignParentEnd="true"-->
-        <!--            android:text="NEXT"-->
-        <!--            android:textSize="20dp"-->
-        <!--            android:textColor="@color/colorWhite"-->
-        <!--            android:background="@color/colorPrimaryDark"-->
-        <!--            android:layout_marginTop="10dp"-->
-        <!--            />-->
-
 
     </RelativeLayout>
 

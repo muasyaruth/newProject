@@ -25,15 +25,6 @@ public class Day_TimeAdapter extends RecyclerView.Adapter<Day_TimeAdapter.Day_Ti
        this.dayList= daysList;
    }
 
-//    public Day_TimeAdapter(ArrayList<com.example.realtimeschedule.Model.Day_Time> CardLocations,
-//                           ItemClickListener listener) {
-//        this.CardLocations = CardLocations;
-//        this.listener = listener;
-//    }
-
-//    public Day_TimeAdapter(ArrayList<Day_Time> cardLocations) {
-//    }
-
     @NonNull
     @Override
     public Day_TimeAdapter.Day_TimeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,10 +35,9 @@ public class Day_TimeAdapter extends RecyclerView.Adapter<Day_TimeAdapter.Day_Ti
 
     @Override
     public void onBindViewHolder(@NonNull Day_TimeAdapter.Day_TimeViewHolder holder, int position) {
-        String titleCard= dayList.get(position).getTitle();
+        Day_Time day= dayList.get(position);
 
-        holder.setData(titleCard);
-
+        holder.bind(day);
     }
 
     @Override
@@ -57,23 +47,25 @@ public class Day_TimeAdapter extends RecyclerView.Adapter<Day_TimeAdapter.Day_Ti
 
     public static class Day_TimeViewHolder extends RecyclerView.ViewHolder{
         private final TextView titleItem;
+        private int dayIndex;
 
         public Day_TimeViewHolder(@NonNull View itemView) {
             super(itemView);
 
             titleItem= itemView.findViewById(R.id.card_title);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent= new Intent(itemView.getContext(), GiveDayAndTimeAvailable.class);
-                    itemView.getContext().startActivity(intent);
-                }
-            });
         }
 
-        public void setData(String titleCard) {
-            titleItem.setText(titleCard);
+        public void bind(Day_Time day) {
+            titleItem.setText(day.getTitle());
+            dayIndex = day.getDayIndex();
+
+            itemView.setOnClickListener(view -> {
+                Intent intent= new Intent(itemView.getContext(), GiveDayAndTimeAvailable.class);
+                intent.putExtra("dayIndex", dayIndex);
+                intent.putExtra("day", day.getTitle());
+                itemView.getContext().startActivity(intent);
+            });
         }
     }
 }

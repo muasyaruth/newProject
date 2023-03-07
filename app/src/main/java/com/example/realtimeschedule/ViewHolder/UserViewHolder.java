@@ -13,7 +13,7 @@ import com.example.realtimeschedule.R;
 
 public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
 
-    public TextView User_Name, Phones,email, User_Id;
+    public TextView User_Name, Phones,email, userType;
     public ItemClickListener itemClickListener;
     public ImageView userImage;
 
@@ -22,7 +22,7 @@ public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         User_Name=itemView.findViewById(R.id.userName);
         Phones=itemView.findViewById(R.id.Phone);
         email=itemView.findViewById(R.id.userEmail);
-        User_Id=itemView.findViewById(R.id.userId);
+        userType=itemView.findViewById(R.id.userType);
         userImage= itemView.findViewById(R.id.userImageView);
     }
 

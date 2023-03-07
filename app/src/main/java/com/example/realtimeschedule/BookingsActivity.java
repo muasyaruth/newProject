@@ -1,227 +1,152 @@
 package com.example.realtimeschedule;
 
 
-import static com.google.firebase.storage.FirebaseStorage.getInstance;
+import android.app.ProgressDialog;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.StrictMode;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.example.realtimeschedule.Model.Bookings;
-import com.example.realtimeschedule.ViewHolder.BookingsViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.example.realtimeschedule.Adapter.BookingsAdapter;
+import com.example.realtimeschedule.Model.Booking;
+import com.example.realtimeschedule.Model.BookingComparator;
+import com.example.realtimeschedule.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.database.ValueEventListener;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.mail.Authenticator;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import java.util.PriorityQueue;
 
 //How To Sort My Recyclerview According To Date And Time With Examples
 public class BookingsActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
+    DatabaseReference bookingsRef, usersRef;
+    FirebaseUser firebaseUser;
+    User user;
+    ProgressDialog loader;
+    ArrayList<User> users;
+    PriorityQueue<Booking> bookings;
+    ArrayList<Booking> bookingsArr;
+    BookingsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookings);
 
-
-
         recyclerView = findViewById(R.id.service_list);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
+        loader = new ProgressDialog(this);
+        users = new ArrayList<>();
+        bookingsArr = new ArrayList<>();
 
-        //Query db = FirebaseDatabase.getInstance().getReference().child("Email").child(mCurrentUser.getUid()).child("Appointment").orderByChild("date");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            bookings = new PriorityQueue<>(new BookingComparator());
+        }
 
+        bookingsRef = FirebaseDatabase.getInstance().getReference().child("Bookings");
+        usersRef = FirebaseDatabase.getInstance().getReference("Users");
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-    }
-
-    private void DateTimePair() {
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        final DatabaseReference bookingsref = FirebaseDatabase.getInstance().getReference().child("Bookings");
-
-        FirebaseRecyclerOptions<Bookings> options = new FirebaseRecyclerOptions.Builder<Bookings>()
-                .setQuery(bookingsref, Bookings.class)
-                .build();
-
-        FirebaseRecyclerAdapter<Bookings, BookingsViewHolder> adapter = new FirebaseRecyclerAdapter
-                <Bookings, BookingsViewHolder>(options) {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            protected void onBindViewHolder(@NonNull BookingsViewHolder bookingsViewHolder,
-                                            int i, @NonNull Bookings bookings) {
-
-                Bookings item= getItem(i);
-
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                String id = firebaseAuth.getUid();
-
-                bookingsViewHolder.clientName.setText(bookings.getSname());
-                bookingsViewHolder.clientEmail.setText(bookings.getSemail());
-                bookingsViewHolder.designation.setText(bookings.getDesignation());
-                bookingsViewHolder.appointmentDate.setText(bookings.getDate());
-//                bookingsViewHolder.appointmentTime.setText(bookings.getTime());
-                bookingsViewHolder.designation.setText(bookings.getDesignation());
-                Picasso.get().load(bookings.getImage()).into(bookingsViewHolder.imageView);
-
-
-                System.out.println("==========================="+bookings.getDate());//ebu run
-//You need to parse date in dd-MM-yyyy pattern first and then format it to the pattern of your choice.
-//                List<String> str = Collections.singletonList(bookings.getDate());
-//                List<String> str = new ArrayList<>();
-//                str.add(bookings.getDate());
-//
-//                for(int j =0;j<str.size();j++){
-//                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-////                    List<LocalDateTime> dateTime = Collections.singletonList(LocalDateTime.parse(str.get(j), formatter));
-//
-//                    List<LocalDateTime> dateTime = new ArrayList<>();
-//                    dateTime.add(LocalDateTime.parse(str.get(j),formatter));
-//                    dateTime.forEach(n->{
-//                        long millis  = n.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//                        long timeNow = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//                        if (timeNow<millis){
-//                            System.out.println("schedule reminder");
-//
-//                            long sendNotification = millis- LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//
-//                            /*schedule reminder*/
-//                            Timer timer = new Timer();
-//                            TimerTask timerTask = new TimerTask() {
-//                                @Override
-//                                public void run() {
-//                                    System.out.println("Scheduling reminder------------------------:)");
-//                                    sendmail();
-//                                }
-//                            };
-//
-//                            try {
-//                                timer.schedule(timerTask, sendNotification);
-//                            }catch(IllegalArgumentException ex){
-//                                ex.printStackTrace();
-//                            }
-////                            sendmail();
-//                        }else {
-//                            System.out.println("time past");
-//                        }
-//                        System.out.println("======================date list===="+n.toString());//connect simu tuone
-//
-//
-//                    });
-//
-//                }
-                
-                 bookingsViewHolder.reschedule.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    }
-                });
-
-                bookingsViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent= new Intent(BookingsActivity.this, BookingDetails.class);
-                        intent.putExtra("Name", item. getSname());
-                        intent.putExtra("Image", item. getImage());
-                        intent.putExtra("Email", item. getSemail());
-                        intent.putExtra("Date", item. getDate());
-                        intent.putExtra("BookingId", id);
-                        startActivity(intent);
-
-                    }
-                });
-
-            }
-
-            @NonNull
-            @Override
-            public BookingsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.booking_items_layout, parent, false);
-                BookingsViewHolder holder = new BookingsViewHolder(view);
-                return holder;
-
-
-            }
-
-        };
+        adapter = new BookingsAdapter(this, bookingsArr);
         recyclerView.setAdapter(adapter);
-        adapter.startListening();
 
+        loader.setMessage("Checking users information...");
+        loader.show();
 
-    }
-
-    private void sendmail() {
-        String email="ruthmuasya2000@gmail.com";
-        String senderPassword="grcwtaoqrvhgwyox";
-        System.out.println("email is ============"+email+ "and  password======"+senderPassword);
-        String messageToSend = "Hello Sir, Please check the appointments that have been send to you 15 minutes before start";
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth","true");
-        properties.put("mail.smtp.ssl.enable","true");
-        properties.put("mail.smtp.host","smtp.gmail.com");
-        properties.put("mail.smtp.port","465");
-
-        Session session= Session.getInstance(properties, new Authenticator() {
+        usersRef.addValueEventListener(new ValueEventListener() {
             @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                //return super.getPasswordAuthentication();
-                return  new PasswordAuthentication(email, senderPassword);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    Toast.makeText(BookingsActivity.this, "No Users in the system currently.", Toast.LENGTH_LONG).show();
+                    loader.dismiss();
+                    return;
+                }
+                users.clear(); // required to empty arrayList as it will be populated again
+                // get all registered users
+                for(DataSnapshot userSnapshot: snapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    // add user to all users list, to avoid quadratic network calls
+                    users.add(user);
+                }
+                // get bookings
+                getBookings();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(BookingsActivity.this, "Error getting users. "+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(email));
-            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse
-                    ("fstfITVC@gmail.com"));//37869793VC
-            message.setSubject("Booking appointments");
-            message.setText(messageToSend);
-            Transport.send(message);
-        } catch (AddressException e) {
-            e.printStackTrace();
-        }
-        catch (MessagingException e) {
-            e.printStackTrace();
+    }
 
-        }
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+    /**
+     * Get bookings. This should be after all users have been loaded
+     */
+    public void getBookings(){
+        loader.setMessage("Getting users booking information...");
+        bookingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                loader.dismiss();
 
+                if(!snapshot.exists()){
+                    Toast.makeText(BookingsActivity.this, "No booking information found. ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                bookings.clear(); // remove any bookings data as it will be populated afresh
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    Booking booking = ds.getValue(Booking.class);
+
+                    // only consider bookings that are not served
+                    if(booking.isServed()) continue;
+
+                    // associate it with a user
+                    for (User user: users){
+                        if(user.getUid().equals(booking.getId())){
+                            booking.setUser(user);
+                            break;
+                        }
+                    }
+                    // add to bookings array
+                    bookings.add(booking);
+                }
+
+                // get items based on priority
+                sortBookings();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(BookingsActivity.this, "Unable to get bookings. "+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    /**
+     * Get bookings based on priority and render them in the recyclerview
+     */
+    public void sortBookings(){
+        bookingsArr.clear();
+        Booking booking;
+        while ((booking = bookings.poll()) != null){
+            bookingsArr.add(booking);
+        }
+
+        // notify recycler adapter
+        adapter.notifyDataSetChanged();
     }
 }

@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="3dp"
-                android:text="Admin Name"/>
+                android:text="Name: Admin"/>
             <TextView
                 android:id="@+id/textAdminPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Phone Number"
+                android:text="Phone: 0715234765"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textAdminEmail"/>
 
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Admin Email"
+                android:text="Email: admin@gmail.com"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textAdminName"/>
 

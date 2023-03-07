@@ -15,10 +15,7 @@ import android.widget.FrameLayout;
 import com.google.android.material.navigation.NavigationView;
 
 public class MenuContainer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
    DrawerLayout drawerLayout;
-
-
 
     @Override
     public void setContentView(View view) {
@@ -60,15 +57,10 @@ public class MenuContainer extends AppCompatActivity implements NavigationView.O
                 startActivity(new Intent(getApplicationContext(),
                         Schedule.class));
                 return true;
-            case R.id.editSchedule:
-                //Toast.makeText(MenuContainer.this, "", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(),
-                        GiveDayAndTimeAvailable.class));
-                return true;
         }
         return true;
     }
-    protected void allocattedActivityTitle(String titleString){
+    protected void allocatedActivityTitle(String titleString){
         if (getSupportActionBar()!=null){
             getSupportActionBar().setTitle(titleString);
         }

@@ -1,41 +1,43 @@
 package com.example.realtimeschedule.Model;
 
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
 
-    public String name, email, phone, password, uid;
-    private String image;
+    private String uid, username, email, phone, image;
+    private int priority = UserPriorities.PRIORITY_STUDENT;
+    private boolean isAdmin = false;
 
     public User() {}
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
                 ", uid='" + uid + '\'' +
                 ", image='" + image + '\'' +
+                ", priority='" + priority + '\'' +
+                ", isAdmin='" + isAdmin + '\'' +
                 '}';
     }
 
-    public User(String name, String image, String email, String phone, String password, String uid) {
-        this.name = name;
-        this.image = image;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.uid = uid;
+    public int getPriority() {
+        return priority;
     }
 
-    public String getName() {
-        return name;
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -54,14 +56,6 @@ public class User {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUid() {
         return uid;
     }
@@ -76,5 +70,45 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    // get user type
+    public String getUserType(){
+        switch (priority){
+            case 1:
+                return "Student";
+            case 2:
+                return "School President";
+            case 3:
+                return "Lecturer";
+            case 4:
+                return "COD";
+            case 5:
+                return "Dean";
+            case 6:
+                return "Registrar";
+            default:
+                return "Unknown User type";
+        }
+    }
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", uid);
+        params.put("username", username);
+        params.put("email", email);
+        params.put("phone", phone);
+        params.put("image", image);
+        params.put("priority", priority);
+        params.put("isAdmin", isAdmin);
+        return  params;
     }
 }

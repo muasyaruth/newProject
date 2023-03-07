@@ -31,7 +31,8 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
-
+        <!--Alarm Broadcast Receiver -->
+        <receiver android:name=".AlarmReceiver"/>
         <activity
             android:name=".MyBookingDetails"
             android:exported="false" />
@@ -72,7 +73,7 @@
             android:name=".BookingDetails"
             android:exported="false" />
         <activity
-            android:name=".Login"
+            android:name=".UserLoginActivity"
             android:exported="false" />
         <activity
             android:name=".AboutActivity"
@@ -84,7 +85,7 @@
             android:name=".BookingsActivity"
             android:exported="false" />
         <activity
-            android:name=".BookingFormActivity"
+            android:name=".BookingSuccessActivity"
             android:exported="false" />
         <activity
             android:name=".AdminTasks"
@@ -97,7 +98,7 @@
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/splasStyle">
+            android:theme="@style/splashStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -105,7 +106,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".UserRegisterActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

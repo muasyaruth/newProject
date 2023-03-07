@@ -15,18 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/product_name"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="Drug Name"-->
-        <!--            android:textAlignment="center"-->
-        <!--            android:textSize="10sp"-->
-        <!--            android:textStyle="bold"-->
-        <!--            android:textColor="@color/colorPrimaryDark"-->
-        <!--            />-->
-
-
         <ImageView
             android:id="@+id/officer_image"
             android:layout_width="122dp"
@@ -44,7 +32,6 @@
             android:id="@+id/clientName"
             android:layout_width="wrap_content"
             android:layout_height="26dp"
-
             android:layout_marginStart="1dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
@@ -88,13 +75,11 @@
             android:id="@+id/BookingDate"
             android:layout_width="wrap_content"
             android:layout_height="26dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="112dp"
             android:text="Booking date"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView8"
             app:layout_constraintTop_toBottomOf="@+id/displayDesignation" />
 
         <TextView
@@ -130,26 +115,26 @@
             app:layout_constraintStart_toEndOf="@+id/officer_image"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:text="Date and Time"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/officer_image"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
         <Button
-            android:id="@+id/buttonReschedule"
+            android:id="@+id/btnServed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reschedule"
+            android:layout_marginLeft="30dp"
+            android:text="Mark as Served"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:text="Cancel"
+            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            app:layout_constraintRight_toLeftOf="@+id/btnServed" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,26 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-
-        <item
-            android:id="@+id/deleteStaff"
-            android:title="Delete staff member" />
-
-        <item android:title="view users"
+        <item android:title="View users"
             android:id="@+id/viewUsers"/>
 
-        <item android:title="Bookings"
+        <item android:title="View Bookings"
             android:id="@+id/bookings"/>
 
-        <item android:title="Schedule"
+        <item android:title="Manage Schedule"
             android:id="@+id/schedule"/>
-
-        <item android:title="Edit schedule"
-            android:id="@+id/editSchedule"/>
-
-        <item android:title="Add Designations"
-            android:id="@+id/newDesignation"/>
-
+        
     </group>
 
 </menu>
